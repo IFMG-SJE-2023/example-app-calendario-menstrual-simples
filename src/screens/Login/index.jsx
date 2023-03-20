@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, ImageBackground, Alert, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ImageBackground, Alert, TouchableOpacity, KeyboardAvoidingView, Image } from 'react-native';
+import Calendario from '../../../assets/calendario.png'
 
 export default function Login() {
 
@@ -54,12 +55,18 @@ return (
     style={styles.container}
     source={{
       uri:
-        'https://i.pinimg.com/564x/ab/6a/12/ab6a126748031b76fbfadae55da925f1.jpg'
+    
+        'https://img.freepik.com/fotos-gratis/ceu-estrelado_1048-11828.jpg?w=996&t=st=1679336646~exp=1679337246~hmac=2bdffdce3864ebb7fbbc671030a0fb7d0c7ed6c5e100f8680bd0b7b8bdb29989'
 
     }}
     resizeMode="stretch"
   >
-    <Text style={styles.title}>UAIPELOTA</Text>
+
+    <Image style={styles.iconecalendario} source={Calendario} resizeMode="contain" />
+
+
+    <Text style={styles.title}>SEJÁ BEM-VINDA AO 
+     NOSSO APP </Text>
 
     {step == 0 ? (
       <KeyboardAvoidingView style={styles.form} behavior="padding">
@@ -91,7 +98,7 @@ return (
         </TouchableOpacity>
 
         <TouchableOpacity onPress={changeForm}>
-          <Text style={[styles.label, { textAlign: 'center' }]}>Cadastre-se grátis!</Text>
+          <Text style={[styles.label, { textAlign: 'center' }]}>Já tem conta ? FAÇA LOGIN</Text>
         </TouchableOpacity>
 
       </KeyboardAvoidingView>
@@ -165,12 +172,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     //justifyContent: 'center',
   },
+  
+  iconecalendario:{
+
+    marginTop: 150,
+    height:'20%',
+
+  },
+
   title: {
-    fontSize: 36,
+    fontSize: 28,
     color: '#fff',
     fontWeight: 'bold',
-    marginBottom: 30,
-    marginTop: 50,
+    marginBottom: -150,
+    marginTop: 200,
+    textAlign: 'center',
+    marginHorizontal: 15,
 
   },
   form: {
@@ -196,7 +213,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   button: {
-    backgroundColor: '#028039',
+    backgroundColor: '#c60052',
     height: 40,
     borderRadius: 20,
     marginTop: 30,
