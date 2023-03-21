@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, ImageBackground, Alert, TouchableOpacity, KeyboardAvoidingView, Image } from 'react-native';
 import Calendario from '../../../assets/calendario.png'
+import Fundo from '../../../assets/fundo.png'
 
 export default function Login() {
 
@@ -53,12 +54,9 @@ export default function Login() {
 return (
   <ImageBackground
     style={styles.container}
-    source={{
-      uri:
-    
-        'https://img.freepik.com/fotos-gratis/ceu-estrelado_1048-11828.jpg?w=996&t=st=1679336646~exp=1679337246~hmac=2bdffdce3864ebb7fbbc671030a0fb7d0c7ed6c5e100f8680bd0b7b8bdb29989'
-
-    }}
+    source={
+      Fundo
+    }
     resizeMode="stretch"
   >
 
@@ -67,6 +65,10 @@ return (
 
     <Text style={styles.title}>SEJÁ BEM-VINDA AO 
      NOSSO APP </Text>
+
+     <Text style={styles.subtitle}>Monitore e preveja sua menstruação, anticoncepcionais,
+        tente engravidar e acompanhe a gravidez em um só app.
+        Atinja todas as suas metas</Text>
 
     {step == 0 ? (
       <KeyboardAvoidingView style={styles.form} behavior="padding">
@@ -175,7 +177,8 @@ const styles = StyleSheet.create({
   
   iconecalendario:{
 
-    marginTop: 150,
+    marginBottom: -150,
+    marginTop: 50,
     height:'20%',
 
   },
@@ -184,12 +187,24 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: '#fff',
     fontWeight: 'bold',
-    marginBottom: -150,
-    marginTop: 200,
+    marginBottom: -130,
+    marginTop: 100,
     textAlign: 'center',
     marginHorizontal: 15,
 
   },
+
+  subtitle: {
+    fontSize: 12,
+    color: '#fff',
+    fontWeight: 'bold',
+    marginBottom: -180,
+    marginTop: 140,
+    textAlign: 'center',
+    marginHorizontal: 50,
+
+  },
+  
   form: {
     marginTop: 270,
     width: '90%',
