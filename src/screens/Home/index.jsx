@@ -59,10 +59,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 10,
         right: 10,
-        bottom: 10,
-        left: 10,
-        width: '100%',
-        height: '100%',
+        width: '80%',
+        height: '90%',
         backgroundColor: 'white',
     },
 }); 
