@@ -47,7 +47,7 @@ export default function Login() {
       Alert.alert('As senhas nao conferem');
       return;
     }
-
+    navigation.navigate('Cadastro');
 
   }
 

@@ -1,36 +1,58 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import CalendarPicker from 'react-native-calendar-picker';
+import { View, Text, TouchableOpacity, ImageBackground, StyleSheet } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Fundo from '../../../assets/fundo.png';
 
-export default function Home() {
-    const [selectedDate, setSelectedDate] = useState(null);
+export default function App() {
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
-    const onDateChange = (date) => {
-        setSelectedDate(date);
-    };
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setDate(currentDate);
+    setShowDatePicker(false);
+  };
 
-    return (
-        <View style={[styles.container]}>
-            <View style={[styles.calendario]}>
-                <CalendarPicker onDateChange={onDateChange}
-                    selectedDayStyle={{ backgroundColor: 'red' }}
-                    selectedDayTextColor={'white'}
-                />
-            </View>
-        </View>
-    );
+  return (
+    <ImageBackground style={styles.container} source={Fundo}>
+      <View>
+        <Text style={styles.titulo}>Texto no meio da tela</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setShowDatePicker(true)}
+        >
+          <Text style={styles.buttonText}>Selecionar data</Text>
+        </TouchableOpacity>
+        {showDatePicker && (
+          <DateTimePicker
+            display="spinner"
+            value={date}
+            onChange={onChange}
+          />
+        )}
+      </View>
+    </ImageBackground>
+  );
 }
+
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        margin: 20,
-    },
-    calendario: {
-        marginTop: 100,
-        elevation: 5,
-        padding: 10,
-        overflow: 'hidden',
-        borderRadius: 10,
-    }
-}); 
+  container: {
+    flex: 1,
+    padding: 30,
+    backgroundColor: '#000',
+    alignItems: 'center',
+  },
+  titulo: {
+    fontSize: 20,
+    color: 'white',
+    paddingBottom: 30,
+  },
+  button: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+  },
+});
