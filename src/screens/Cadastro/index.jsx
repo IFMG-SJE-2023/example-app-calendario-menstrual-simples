@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, KeyboardAvoidingView, ViewComponent } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, KeyboardAvoidingView, ViewComponent, TextInput} from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -37,7 +37,7 @@ export default function App() {
     >
       {step === 0 ? (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
-          <View style={styles.header}>
+          <View style={styles.internal}>
             <Text style={styles.titulo}>EM QUAL DIA OCORREU SUA ULTIMA MENSTRUAÇÃO ?</Text>
           </View>
           <View style={styles.calendario}>
@@ -48,21 +48,21 @@ export default function App() {
               markedDates={{ [dataSelecionada]: { selected: true } }}
             />
           </View>
-          <TouchableOpacity style={styles.botao} onPress={() => {
+          <TouchableOpacity style={styles.button} onPress={() => {
             onSelecionarData();
             changeForm();
           }}>
-            <Text style={styles.textoBotao}>Confirmar</Text>
+            <Text style={styles.buttonText}>Confirmar</Text>
           </TouchableOpacity>
           <Text style={styles.dataSelecionada}>{dataSelecionada}</Text>
         </KeyboardAvoidingView>
       ) : step === 1 ? (
-        <View style={styles.container}>
-          <Text style={styles.pergunta}>SUA MENSTRUAÇÃO E DESREGULADA ?</Text>
-          <View style={styles.botoesContainer}>
+        <View style={styles.internal2}>
+          <Text style={styles.titulo2}>SUA MENSTRUAÇÃO E DESREGULADA ?</Text>
+          <View style={[styles.botoesContainer, {flexDirection: 'row'}]}>
             <TouchableOpacity
               style={[
-                styles.botao,
+                styles.button2,
                 respostaSelecionada === 'Sim' && styles.botaoSelecionado,
               ]}
               onPress={() => {
@@ -70,30 +70,38 @@ export default function App() {
                 changeForm();
               }
               }
-              disabled={respostaSelecionada !== null && respostaSelecionada !== 'Brasília'}
+              disabled={respostaSelecionada !== null && respostaSelecionada !== 'Sim'}
             >
-              <Text style={styles.botaoTexto}>Sim</Text>
+              <Text style={styles.buttonText}>Sim</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
-                styles.botao,
+                styles.button2,
                 respostaSelecionada === 'Não' && styles.botaoSelecionado,
               ]}
               onPress={() => {
-                handlePressBotao('Sim');
+                handlePressBotao('Não');
                 changeForm();
               }
               }
-              disabled={respostaSelecionada !== null && respostaSelecionada !== 'São Paulo'}
-
+              disabled={respostaSelecionada !== null && respostaSelecionada !== 'Não'}
             >
-              <Text style={styles.botaoTexto}>Não</Text>
+              <Text style={styles.buttonText}>Não</Text>
             </TouchableOpacity>
           </View>
         </View>
       ) : (
-        <View>
-          <Text style={styles.pergunta}>SUA MENSTRUAÇÃO E DESREGULADA ?</Text>
+        <View style={styles.internal2}>
+          <Text style={styles.titulo2}>SUAS MENSTRUAÇÕES CUSTAM TER INTERVALO DE QUANTOS DIAS?</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Intervalo em dias"
+          />
+          <TouchableOpacity style={styles.button2} onPress={() => {
+            
+          }}>
+            <Text style={styles.buttonText}>Confirmar</Text>
+          </TouchableOpacity>
         </View>
       )
       }
@@ -106,44 +114,66 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
+
+  internal: {
     alignItems: 'center',
-    marginBottom: 20,
-    paddingTop: 20,
+    marginBottom: 40,
+    paddingTop: 40,
   },
   titulo: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontSize : 16,
     color: 'white',
-    marginRight: 10,
-  },
-  icone: {
-    backgroundColor: '#333',
-    padding: 10,
-    borderRadius: 20,
+    textAlign: 'center', 
   },
   calendario: {
-    overflow: 'hidden',
-    marginVertical: 20,
-    padding: 10,
+    paddingHorizontal: 10,
+    width : '100%',
   },
-  botao: {
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 5,
-    marginRight: 10,
+  button: {
+    backgroundColor: '#c60052',
+    height: 40,
+    borderRadius: 20,
+    marginTop: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  textoBotao: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  dataSelecionada: {
+  buttonText: {
+    color: '#fff',
     fontSize: 18,
+    textTransform: 'uppercase',
+    fontWeight: 'bold'
+  },
+  titulo2: {
+    fontSize : 16,
+    color: 'white',
+    textAlign: 'center', 
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+  internal2: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   botoesContainer: {
-    flexDirection: 'row',
-    paddingTop: 100,
+    marginTop: 20,
+  },
+  button2: {
+    backgroundColor: '#c60052',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginHorizontal: 10,
+  },
+  botaoSelecionado: {
+    backgroundColor: '#ff5b8b',
+  },
+  input: {
+    backgroundColor: '#fff',
+    width: '60%',
+    height: 40,
+    borderRadius: 20,
+    fontWeight: 'bold',
+    paddingLeft: 20
   },
 });
