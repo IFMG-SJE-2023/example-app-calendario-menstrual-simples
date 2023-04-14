@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, KeyboardAvoidingView, ViewComponent, TextInput} from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -8,6 +9,7 @@ import Fundo from '../../../assets/fundo.png';
 export default function App() {
   const [dataSelecionada, setDataSelecionada] = useState('');
   const [step, setStep] = useState(0);
+  const navigation = useNavigation();
   const [respostaSelecionada, setRespostaSelecionada] = useState(null);
 
   const handlePressBotao = (resposta) => {
@@ -98,7 +100,7 @@ export default function App() {
             placeholder="Intervalo em dias"
           />
           <TouchableOpacity style={styles.button2} onPress={() => {
-            
+            navigation.navigate('Login');
           }}>
             <Text style={styles.buttonText}>Confirmar</Text>
           </TouchableOpacity>
@@ -164,6 +166,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     marginHorizontal: 10,
+    marginVertical: 20,
+    borderRadius: 20,
   },
   botaoSelecionado: {
     backgroundColor: '#ff5b8b',
