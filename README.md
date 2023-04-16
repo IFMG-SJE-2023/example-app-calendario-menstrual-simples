@@ -22,7 +22,7 @@ O aplicativo permite:
 
 2. Navegue até a pasta onde deseja clonar o repositório.
 
-3. Digite o comando git clone seguido do link que você copiou anteriormente. Ficará assim:
+3. Digite o comando:
 
 ```bash
 git clone https://github.com/IFMG-SJE-2023/example-app-calendario-menstrual-simples.git
