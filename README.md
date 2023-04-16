@@ -1,23 +1,43 @@
-#Calendário Menstrual
+# Calendário Menstrual
 Este é um aplicativo de Calendário Menstrual, desenvolvido como projeto da disciplina Tópicos em Desenvolvimento para Dispositivos Móveis.
 
-#Funcionalidades
+## Funcionalidades
 O aplicativo permite:
-Registro de datas de início e fim da menstruação
-Previsão da próxima menstruação
-Registro de informações sobre o ciclo menstrual
-Visualização do histórico de ciclos menstruais
-Edição e exclusão de ciclos menstruais registrados
-Notificações sobre datas de início e fim da menstruação e previsão da próxima menstruação
+1. Registro de datas de início e fim da menstruação
+2. Previsão da próxima menstruação
+3. Registro de informações sobre o ciclo menstrual
+4. Visualização do histórico de ciclos menstruais
+5. Edição e exclusão de ciclos menstruais registrados
+6. Notificações sobre datas de início e fim da menstruação e previsão da próxima menstruação
 
-#Tecnologias utilizadas
-React Native
-SQLite
-Expo
-#Como executar o projeto
-Clone o repositório para sua máquina
-Instale as dependências usando o comando npm install
-Execute o projeto com o comando expo start
-Instale o aplicativo Expo em seu dispositivo móvel
-Escaneie o código QR exibido no terminal com o aplicativo Expo
-Aguarde a compilação do aplicativo e a inicialização no seu dispositivo móvel
+## Tecnologias utilizadas
+
+- React Native
+- SQLite
+- Expo
+
+## Como executar o projeto
+
+1. Clonar o repositório para sua máquina:
+
+2. Navegue até a pasta onde deseja clonar o repositório.
+
+3. Digite o comando git clone seguido do link que você copiou anteriormente. Ficará assim:
+
+```bash
+git clone https://github.com/IFMG-SJE-2023/example-app-calendario-menstrual-simples.git
+```
+
+
+4. Instale as dependências usando o comando
+```bash
+npm install
+```
+
+5. Execute o projeto com o comando 
+```bash
+npx expo start
+```
+6. Escaneie o código QR exibido no terminal com o aplicativo Expo.
+
+7. Aguarde a compilação do aplicativo e a inicialização no seu dispositivo móvel.
