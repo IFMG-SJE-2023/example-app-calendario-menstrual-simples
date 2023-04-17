@@ -2,16 +2,20 @@ import db from "./SQLiteBase";
 
 db.transaction((tx) => {
   tx.executeSql(
-    "CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, email TEXT, data_nascimento TEXT, senha TEXT);");
+    "CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, email TEXT, data_nascimento TEXT, password TEXT);");
 });
+
+/* db.transaction(tx => {
+  tx.executeSql('DROP TABLE IF EXISTS usuarios;');
+}); */
 
 const create = (obj) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        "INSERT INTO usuarios ( nome, email,data_nascimento,senha) values (?, ?, ?, ?);",
-        [obj.nome, obj.email, obj.data_nascimento, obj.senha],
+        "INSERT INTO usuarios ( nome, email,data_nascimento,password) values (?, ?, ?, ?);",
+        [obj.nome, obj.email, obj.data_nascimento, obj.password],
         //-----------------------
         (_, { rowsAffected, insertId }) => {
           if (rowsAffected > 0) resolve(insertId);
@@ -66,12 +70,12 @@ const findByLoginAndPassword = (email, password) => {
     db.transaction((tx) => {
       //comando SQL modificável
       tx.executeSql(
-        "SELECT * FROM usuarios WHERE email LIKE ? and senha LIKE ? ;",
+        "SELECT * FROM usuarios WHERE email LIKE ? and password LIKE ? ;",
         [email, password],
         //-----------------------
         (_, { rows }) => {
           if (rows.length > 0) resolve(rows._array);
-          else reject("Objeto não encontrado: email=" + email + "senha=" + password); // nenhum registro encontrado
+          else reject("Objeto não encontrado: email=" + email + "password=" + password); // nenhum registro encontrado
         },
         (_, error) => reject(error) // erro interno em tx.executeSql
       );

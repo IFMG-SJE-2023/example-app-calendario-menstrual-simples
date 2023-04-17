@@ -56,11 +56,13 @@ const TabNavigator = () => {
 
 const AppNavigator = () => {
   return (
+
     <Stack.Navigator initialRouteName="Login">
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
       <Stack.Screen name="Cadastro" component={Cadastro} options={{ headerShown: false }} />
       <Stack.Screen name="TelaPrincipal" component={TabNavigator} options={{ headerShown: false }} />
     </Stack.Navigator>
+    
   );
 };
 

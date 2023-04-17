@@ -1,31 +1,44 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import CalendarPicker from 'react-native-calendar-picker';
+import { Calendar } from 'react-native-calendars';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 export default function Home() {
-    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [showBox, setShowBox] = useState(false);
-    const onDateChange = (date) => {
-        setSelectedDate(date);
-    };
+    const heartDates = ['2023-02-14', '2023-03-08', '2023-04-22'];
     const handleFabPress = () => {
         setShowBox(!showBox);
     };
+
     return (
         <View style={[styles.container]}>
             <View style={[styles.calendario]}>
-                <CalendarPicker onDateChange={onDateChange}
-                    selectedDayStyle={{ backgroundColor: 'red' }}
-                    selectedDayTextColor={'white'}
+                <Calendar
+                    minDate={'2023-01-01'}
+                    maxDate={'2024-12-31'}
+                    dayComponent={({ date, state }) => {
+                        return (
+                            <View style={{ alignItems: 'center' }}>
+                                {/* Check if the current date is in the list of heart dates */}
+                                {heartDates.includes(date.dateString) && (
+                                    <Icon name="heart" size={28} color="#f00" style={{ position: 'absolute' }} />
+                                )}
+                                <Text style={{ textAlign: 'center', color: state === 'disabled' ? 'gray' : 'black' }}>
+                                    {date.day}
+                                </Text>
+                            </View>
+                        );
+                    }}
                 />
             </View>
-
             {showBox && <View style={styles.box} />}
             <TouchableOpacity style={styles.fab} onPress={handleFabPress}>
                 <Text style={styles.fabText}>+</Text>
             </TouchableOpacity>
 
-        </View>
+        </View >
     );
 }
 const styles = StyleSheet.create({
@@ -39,6 +52,7 @@ const styles = StyleSheet.create({
         elevation: 5,
         paddingTop: 10,
         paddingBottom: 10,
+        width: '100%',
     },
     fab: {
         position: 'absolute',

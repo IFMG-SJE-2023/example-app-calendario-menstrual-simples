@@ -1,49 +1,44 @@
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, ImageBackground, Alert, TouchableOpacity, KeyboardAvoidingView, Image, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
+import { format } from 'date-fns';
 import Calendario from '../../../assets/calendario.png'
 import Fundo from '../../../assets/fundo.png'
 import Usuarios from '../../services/sqlite/Usuarios';
+import {AuthContext } from '../../../src/contexts/auth';
 
 export default function Login() {
   const navigation = useNavigation();
   const [showDatePicker, setShowDatePicker] = useState(false);
-
   const [step, setStep] = useState(0);
-
+  const {singIn} = useContext(AuthContext);
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [datanascimento, setDataNascimento] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [repeatpassword, setRepeatPassword] = useState('');
 
+
+
+
   const usuario = {
-    nome: "",
-    email: "",
-    data_nascimento: "",
-    senha: "",
+    nome: name,
+    email: email,
+    data_nascimento: format(new Date(selectedDate), 'dd/MM/yyyy'),
+    senha: password,
   };
 
+    
   const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || datanascimento;
+    const currentDate = selectedDate;
     setDate(currentDate);
     setShowDatePicker(false);
   };
 
-
-
-
-  function handleSubmit() {
-    /* Usuarios.all().then((usuarios) => {
-      console.log(usuarios);
-    }).catch((erro) => {
-      console.error(erro);
-    }); */
+  const handleSubmit = (email, password) => {
     navigation.navigate('TelaPrincipal');
-  }
+  };
   function changeForm() {
     if (step === 0) {
       setStep(1);
@@ -72,16 +67,16 @@ export default function Login() {
     if (password !== repeatpassword) {
       Alert.alert('As senhas nao conferem');
       return;
-    }
-    usuario ["nome"] = name;
-    usuario ["email"] = email;
-    usuario ["data_nascimento"] = selectedDate;
-    usuario ["senha"] = password;
-
+    } */
+    Usuarios.all()
+      .then((id) => console.log("Objeto inserido com sucesso! ID: ", id))
+      .catch((error) => console.error(error));
+    console.log("a");
     Usuarios.create(usuario)
       .then((id) => console.log("Objeto inserido com sucesso! ID: ", id))
-      .catch((error) => console.error(error)); */
-
+      .catch((error) => console.error(error));
+  
+      changeForm();
     navigation.navigate('Cadastro');
   }
 
@@ -126,9 +121,8 @@ export default function Login() {
             onChangeText={setPassword}
           />
 
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Entrar
-            </Text>
+          <TouchableOpacity style={styles.button} onPress={() => handleSubmit(email, password)}>
+            <Text style={styles.buttonText}>Entrar</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={changeForm}>
@@ -160,16 +154,15 @@ export default function Login() {
           <Text style={styles.label}>Data de Nascimento</Text>
           <TextInput
             style={styles.input}
-            //value={selectedDate.toString().slice(0, 10)}
             value={selectedDate.toLocaleDateString('pt-BR')}
             onTouchStart={() => setShowDatePicker(true)}
+            onChangeText={setEmail}
           />
 
           {showDatePicker && (
             <DateTimePicker
               value={selectedDate}
               display="spinner"
-              locale="pt-BR"
               onChange={(event, date) => {
                 setShowDatePicker(false);
                 if (date) {
