@@ -7,6 +7,7 @@ import Calendario from '../../../assets/calendario.png'
 import Fundo from '../../../assets/fundo.png'
 import Usuarios from '../../services/sqlite/Usuarios';
 import {AuthContext } from '../../../src/contexts/auth';
+import { StatusBar } from 'react-native';
 
 export default function Login() {
   const navigation = useNavigation();
@@ -37,6 +38,14 @@ export default function Login() {
   };
 
   const handleSubmit = (email, password) => {
+    /* if (email === '') {
+      Alert.alert('Informe seu email');
+      return;
+    }
+    if(password === '') {
+      Alert.alert('Informe sua senha');
+      return;
+    } */
     navigation.navigate('TelaPrincipal');
   };
   function changeForm() {
@@ -68,26 +77,28 @@ export default function Login() {
       Alert.alert('As senhas nao conferem');
       return;
     } */
-    Usuarios.all()
+    /* Usuarios.all()
       .then((id) => console.log("Objeto inserido com sucesso! ID: ", id))
       .catch((error) => console.error(error));
     console.log("a");
     Usuarios.create(usuario)
       .then((id) => console.log("Objeto inserido com sucesso! ID: ", id))
       .catch((error) => console.error(error));
-  
+   */
       changeForm();
     navigation.navigate('Cadastro');
   }
 
   return (
     <ImageBackground
+    
       style={styles.container}
       source={
         Fundo
       }
       resizeMode="stretch"
     >
+      <StatusBar hidden={true} />
 
       <Image style={styles.iconecalendario} source={Calendario} resizeMode="contain" />
 

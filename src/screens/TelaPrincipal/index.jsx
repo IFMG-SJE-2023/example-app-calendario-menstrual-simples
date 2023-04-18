@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesome5 } from 'react-native-vector-icons';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { StatusBar } from 'react-native';
 
 const TelaPrincipal = () => {
   const currentDate = new Date();
@@ -10,19 +11,23 @@ const TelaPrincipal = () => {
   const dias = '10';
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar hidden={true} />
       <View style={styles.header}>
-        <FontAwesome5 name="cog" size={30} color="#333"  style={styles.cogIcon}/>
+        <FontAwesome5 name="cog" size={30} color="#333" style={styles.cogIcon} />
         <Text style={styles.dataAtual}>{`${day}/${month}`}</Text>
         <FontAwesome5 name="bell" size={30} color="#333" style={styles.bellIcon} />
       </View>
-      
+
       <ScrollView>
         <Text style={styles.mensagem}>{
           "Menstruação em"
         }</Text>
         <Text style={styles.date}>{
           dias
+        }</Text>
+        <Text style={styles.mensagem}>{
+          "Dias"
         }</Text>
         <View style={styles.retangulo}>
           <Text style={styles.textoRetangulo}>Conteúdo do Retângulo 1</Text>
@@ -35,7 +40,7 @@ const TelaPrincipal = () => {
         </View>
       </ScrollView>
 
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -65,10 +70,9 @@ const styles = StyleSheet.create({
   mensagem: {
     fontSize: 18,
     textAlign: 'center',
-    marginBottom: 16,
   },
   date: {
-    fontSize: 120,
+    fontSize: 100,
     fontWeight: 'bold',
     textAlign: 'center',
   },
