@@ -1,7 +1,7 @@
 # Calendário Menstrual
 Este é um aplicativo de Calendário Menstrual, desenvolvido como projeto da disciplina Tópicos em Desenvolvimento para Dispositivos Móveis. Este projeto está sendo desenvolvido pelos alunos da turma SI201.
 
-![Progresso](https://img.shields.io/badge/progresso-25%25-brightgreen)
+![Progresso](https://img.shields.io/badge/progresso-35%25-brightgreen)
 
 ## Funcionalidades
 O aplicativo permite:
