@@ -14,7 +14,7 @@ const create = (obj) => {
                 "INSERT INTO menstruacoes (data_ultima_menstruacao, data_proxima_menstruacao, informacoes_menstruais, id_usuario) values (?, ?, ?, ?);",
                 [obj.data_ultima_menstruacao, obj.data_proxima_menstruacao, obj.informacoes_menstruais, obj.id_usuario],
                 //-----------------------
-                (_, { rowsAffected, insertId }) => {
+                (_, { rowsAffected, insertId }) => {s
                     if (rowsAffected > 0) resolve(insertId);
                     else reject("Error inserting obj: " + JSON.stringify(obj)); // insert falhou
                 },

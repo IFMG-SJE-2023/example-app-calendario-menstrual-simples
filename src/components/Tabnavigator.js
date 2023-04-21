@@ -1,11 +1,11 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Login from '../screens/Login';
-import Home from '../screens/Home';
-import Dicas from '../screens/Dicas';
-import Cadastro from '../screens/Cadastro';
-import TelaPrincipal from '../screens/TelaPrincipal';
+import l from '../screens/Login';
+import h from '../screens/Home';
+import d from '../screens/Dicas';
+import c from '../screens/Cadastro';
+import tp from '../screens/TelaPrincipal';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Stack = createStackNavigator();
@@ -19,8 +19,8 @@ const TabNavigator = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        name="TelaPrincipal"
-        component={TelaPrincipal}
+        name="Tela Principal"
+        component={tp}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
@@ -29,22 +29,22 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Home"
-        component={Home}
+        name="Calendario"
+        component={h}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <TabBarIcon name="ios-home" color={color} size={size} />
+            <TabBarIcon name="ios-calendar" color={color} size={size} />
           ),
         }}
       />
       <Tab.Screen
         name="Dicas"
-        component={Dicas}
+        component={d}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <TabBarIcon name="ios-home" color={color} size={size} />
+            <TabBarIcon name="ios-information-circle-outline" color={color} size={size} />
           ),
         }}
       />
@@ -56,11 +56,13 @@ const TabNavigator = () => {
 
 const AppNavigator = () => {
   return (
+
     <Stack.Navigator initialRouteName="Login">
-      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-      <Stack.Screen name="Cadastro" component={Cadastro} options={{ headerShown: false }} />
+      <Stack.Screen name="Login" component={l} options={{ headerShown: false }} />
+      <Stack.Screen name="Cadastro" component={c} options={{ headerShown: false }} />
       <Stack.Screen name="TelaPrincipal" component={TabNavigator} options={{ headerShown: false }} />
     </Stack.Navigator>
+    
   );
 };
 
