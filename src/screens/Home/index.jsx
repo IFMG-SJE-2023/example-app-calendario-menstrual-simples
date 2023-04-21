@@ -1,19 +1,29 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Button, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Button, SafeAreaView, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FAB } from 'react-native-elements';
 import { StatusBar } from 'react-native';
+import dbUsuarios from '../../services/sqlite/Usuarios';
+
 
 export default function Home() {
-    const [selectedDate, setSelectedDate] = useState(new Date());
     const [showBox, setShowBox] = useState(false);
     const heartDates = ['2023-02-14', '2023-03-08', '2023-04-22'];
     const [modalVisible, setModalVisible] = useState(false);
     const [isFabGroupVisible, setIsFabGroupVisible] = useState(false);
+    const [relacaoSexual, setRelacaoSexual] = useState('');
+
     const handleFabPress = () => {
         setShowBox(!showBox);
     };
+    const handleNextPress = () => {
+        if (relacaoSexual) {
+
+        } else {
+            Alert.alert('Selecione a data para continuar.');
+        }
+    }
 
     return (
         <SafeAreaView style={[styles.container]}>
@@ -40,7 +50,7 @@ export default function Home() {
             <View style={[styles.fabPrincipal]}>
                 <View style={[styles.fabGroup, { display: isFabGroupVisible ? 'flex' : 'none' }]}>
                     <FAB
-                        title="Opção 1"
+                        title="Relação"
                         icon={{
                             name: 'check',
                             type: 'font-awesome',
@@ -61,7 +71,29 @@ export default function Home() {
                     >
                         <View style={styles.centeredView}>
                             <View style={styles.modalView}>
-                                <Button title="Fechar" onPress={() => setModalVisible(false)} />
+                                <Text style={styles.texto}>
+                                    Adcionar Relação Sexual
+                                </Text>
+                                <TouchableOpacity
+                                    style={styles.button}
+                                    onPress={() => {
+                                        setModalVisible(false);
+                                    }}
+                                >
+                                    <Text style={styles.buttonText}>X</Text>
+                                </TouchableOpacity>
+                                <View style={styles.calendario}>
+                                    <Calendar
+                                        locale='pt-br'
+                                        monthFormat='MMMM yyyy'
+                                        onDayPress={(day) => setRelacaoSexual(day.dateString)}
+                                        markedDates={{ [relacaoSexual]: { selected: true } }}
+                                    />
+                                </View>
+                                <TouchableOpacity style={styles.button2}
+                                    onPress={handleNextPress}>
+                                    <Text style={styles.buttonText}>Confirmar</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </Modal>
@@ -83,7 +115,7 @@ export default function Home() {
                     />
                 </View>
                 <FAB
-                    title="Opções"
+                    title="Opções  "
                     icon={{
                         name: 'plus',
                         type: 'font-awesome',
@@ -129,6 +161,7 @@ const styles = StyleSheet.create({
     },
     modalView: {
         backgroundColor: 'white',
+
         borderRadius: 20,
         padding: 35,
         alignItems: 'center',
@@ -140,7 +173,34 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        width: Dimensions.get('window').width * 0.6,
-        height: Dimensions.get('window').height * 0.6,
+        width: Dimensions.get('window').width * 0.75,
+        height: Dimensions.get('window').height * 0.75,
+    },
+    button: {
+        backgroundColor: 'red',
+        padding: 10,
+        margin: 10,
+        borderRadius: 5,
+        position: 'absolute',
+        top: 0,
+        right: 0
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold'
+    },
+    texto: {
+        alignItems: 'center',
+    },
+    button2: {
+        backgroundColor: '#c60052',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        marginHorizontal: 10,
+        marginVertical: 20,
+        borderRadius: 20,
+    },
+    botaoSelecionado: {
+        backgroundColor: '#ff5b8b',
     },
 }); 

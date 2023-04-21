@@ -2,24 +2,41 @@ import React, { useState } from 'react';
 import { FontAwesome5 } from 'react-native-vector-icons';
 import { View, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import { StatusBar } from 'react-native';
+import { AuthContext } from '../../../src/contexts/auth';
+import { color } from 'react-native-elements/dist/helpers';
+
 
 const TelaPrincipal = () => {
   const currentDate = new Date();
   const day = currentDate.getDate();
   const month = currentDate.toLocaleString('default', { month: 'long' });
+  //const { user } = useContext(AuthContext);
+  const dias = '20';
+  const [iconName, setIconName] = useState('bell');
 
-  const dias = '10';
-
+  const handlePress = () => {
+    if (iconName === 'bell') {
+      setIconName('check');
+    } else {
+      setIconName('bell');
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar hidden={true} />
       <View style={styles.header}>
         <FontAwesome5 name="cog" size={30} color="#333" style={styles.cogIcon} />
         <Text style={styles.dataAtual}>{`${day}/${month}`}</Text>
-        <FontAwesome5 name="bell" size={30} color="#333" style={styles.bellIcon} />
+        <FontAwesome5
+          name={iconName}
+          size={30}
+          color="#333"
+          style={styles.bellIcon}
+          onPress={handlePress} />
       </View>
 
       <ScrollView>
+
         <Text style={styles.mensagem}>{
           "Menstruação em"
         }</Text>
@@ -30,13 +47,13 @@ const TelaPrincipal = () => {
           "Dias"
         }</Text>
         <View style={styles.retangulo}>
-          <Text style={styles.textoRetangulo}>Conteúdo do Retângulo 1</Text>
+          <Text style={styles.textoRetangulo}>Dados Menstruacao</Text>
         </View>
         <View style={styles.retangulo}>
-          <Text style={styles.textoRetangulo}>Conteúdo do Retângulo 2</Text>
+          <Text style={styles.textoRetangulo}>Dados Rela;oes</Text>
         </View>
         <View style={styles.retangulo}>
-          <Text style={styles.textoRetangulo}>Conteúdo do Retângulo 3</Text>
+          <Text style={styles.textoRetangulo}>Aniversario</Text>
         </View>
       </ScrollView>
 

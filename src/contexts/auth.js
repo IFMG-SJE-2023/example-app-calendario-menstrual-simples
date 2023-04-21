@@ -14,19 +14,26 @@ function AuthProvider({children}) {
                 setUser({
                     id: user.id,
                     email: user.email,
+                    name: user.name,
                     status: true,
                 });
-                navigation.navigate('TelaPrincipal');
             })
             .catch((error) => {
-                console.log("Erro de login")
-                //Alert.alert('Erro no Email ou Senha');
             });
-
     }
+    async function checkResultUser(email, nome) {
+        try {
+          const result = await dbUsuarios.findByEmailandName(email, nome);
+          // Ação a ser executada se o resultado for verdadeiro
+          console.log('Resultado encontrado:', result);
+        } catch (error) {
+          // Ação a ser executada se o resultado for falso
+          console.log('Erro:', error);
+        }
+      }
 
     return (
-        <AuthContext.Provider value={{ singIn, user }}>
+        <AuthContext.Provider value={{user }}>
             {children}
         </AuthContext.Provider>
     );

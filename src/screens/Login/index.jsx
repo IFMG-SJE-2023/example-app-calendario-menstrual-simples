@@ -1,27 +1,22 @@
 import { useNavigation } from '@react-navigation/native';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, ImageBackground, Alert, TouchableOpacity, KeyboardAvoidingView, Image, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
 import Calendario from '../../../assets/calendario.png'
 import Fundo from '../../../assets/fundo.png'
 import Usuarios from '../../services/sqlite/Usuarios';
-import {AuthContext } from '../../../src/contexts/auth';
 import { StatusBar } from 'react-native';
 
 export default function Login() {
   const navigation = useNavigation();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [step, setStep] = useState(0);
-  const {singIn} = useContext(AuthContext);
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [repeatpassword, setRepeatPassword] = useState('');
-
-
-
 
   const usuario = {
     nome: name,
@@ -30,7 +25,7 @@ export default function Login() {
     senha: password,
   };
 
-    
+
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
     setDate(currentDate);
@@ -38,14 +33,25 @@ export default function Login() {
   };
 
   const handleSubmit = (email, password) => {
-    /* if (email === '') {
-      Alert.alert('Informe seu email');
-      return;
-    }
-    if(password === '') {
-      Alert.alert('Informe sua senha');
-      return;
-    } */
+    /*     if (email === '') {
+          Alert.alert('Informe seu email');
+          return;
+        }
+        if (password === '') {
+          Alert.alert('Informe sua senha');
+          return;
+        }
+        //precisa mandar os dados para o objeto no singIN
+        
+        Usuarios.findByLoginAndPassword(email, password)
+          .then((result) => {
+            navigation.navigate('TelaPrincipal');
+          })
+          .catch((error) => {
+            Alert.alert('Os dados digitados não correspondem a nenhum usuário.');
+            //console.error(error);
+          });
+       */
     navigation.navigate('TelaPrincipal');
   };
   function changeForm() {
@@ -76,22 +82,22 @@ export default function Login() {
     if (password !== repeatpassword) {
       Alert.alert('As senhas nao conferem');
       return;
-    } */
-    /* Usuarios.all()
-      .then((id) => console.log("Objeto inserido com sucesso! ID: ", id))
-      .catch((error) => console.error(error));
-    console.log("a");
-    Usuarios.create(usuario)
-      .then((id) => console.log("Objeto inserido com sucesso! ID: ", id))
-      .catch((error) => console.error(error));
-   */
-      changeForm();
-    navigation.navigate('Cadastro');
+    }
+    Usuarios.findByEmailandName(email, name)
+      .then((id) => Alert.alert('Usuario Existente.'))
+      .catch((error) => {
+        Usuarios.create(usuario)
+          .then((id) => console.log("Objeto inserido com sucesso! ID: ", id))
+          .catch((error) => console.error(error));
+        navigation.navigate('Cadastro');
+        changeForm();
+      }); */
+    
   }
 
   return (
     <ImageBackground
-    
+
       style={styles.container}
       source={
         Fundo
@@ -225,10 +231,8 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     backgroundColor: '#000',
     alignItems: 'center',
-    //justifyContent: 'center',
   },
 
   iconecalendario: {
@@ -294,6 +298,5 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     fontWeight: 'bold'
 
-  }
-
+  },
 }); 

@@ -12,10 +12,10 @@ export default function App() {
   const [intervalo, setIntervalo] = useState('');
 
   const handlePressBotao = (resposta) => {
-    if (resposta ==  'Não'){
+    if (resposta == 'Não') {
       setIntervalo('28');
       navigation.navigate('Login');
-    }else{
+    } else {
       changeForm();
     }
   };
@@ -102,18 +102,18 @@ export default function App() {
         </View>
       ) : (
         <View style={styles.internal2}>
-        <Text style={styles.titulo2}>SUAS MENSTRUAÇÕES CUSTAM TER INTERVALO DE QUANTOS DIAS?</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Intervalo em dias"
-          onChangeText={text => setIntervalo(text)}
-          keyboardType='numeric'
-          value={intervalo}
-        />
-        <TouchableOpacity style={styles.button2} disabled={!intervalo} onPress={() => handleConfirmarPress(intervalo)}>
-          <Text style={styles.buttonText}>Confirmar</Text>
-        </TouchableOpacity>
-      </View>
+          <Text style={styles.titulo2}>SUAS MENSTRUAÇÕES CUSTAM TER INTERVALO DE QUANTOS DIAS?</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Intervalo em dias"
+            onChangeText={text => setIntervalo(text)}
+            keyboardType='numeric'
+            value={intervalo}
+          />
+          <TouchableOpacity style={styles.button2} disabled={!intervalo} onPress={() => handleConfirmarPress(intervalo)}>
+            <Text style={styles.buttonText}>Confirmar</Text>
+          </TouchableOpacity>
+        </View>
       )
       }
     </ImageBackground >
