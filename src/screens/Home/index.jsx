@@ -1,22 +1,29 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Button, SafeAreaView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, SafeAreaView, Alert, TextInput } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FAB } from 'react-native-elements';
 import { StatusBar } from 'react-native';
 import dbUsuarios from '../../services/sqlite/Usuarios';
 
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function Home() {
-    const [showBox, setShowBox] = useState(false);
+    //marcadores
     const heartDates = ['2023-02-14', '2023-03-08', '2023-04-22'];
-    const [modalVisible, setModalVisible] = useState(false);
-    const [isFabGroupVisible, setIsFabGroupVisible] = useState(false);
-    const [relacaoSexual, setRelacaoSexual] = useState('');
+    //Data
+    const [showDatePicker, setShowDatePicker] = useState(false);
 
-    const handleFabPress = () => {
-        setShowBox(!showBox);
-    };
+    //Modal
+    const [modal1Visible, setModal1Visible] = useState(false);
+    const [modal2Visible, setModal2Visible] = useState(false);
+    const [isFabGroupVisible, setIsFabGroupVisible] = useState(false);
+
+    // Var
+    const [relacaoSexual, setRelacaoSexual] = useState('');
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [intervalo, setIntervalo] = useState();
+
     const handleNextPress = () => {
         if (relacaoSexual) {
 
@@ -24,7 +31,11 @@ export default function Home() {
             Alert.alert('Selecione a data para continuar.');
         }
     }
-
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate;
+        setDate(currentDate);
+        setShowDatePicker(false);
+    };
     return (
         <SafeAreaView style={[styles.container]}>
             <StatusBar hidden={true} />
@@ -50,23 +61,21 @@ export default function Home() {
             <View style={[styles.fabPrincipal]}>
                 <View style={[styles.fabGroup, { display: isFabGroupVisible ? 'flex' : 'none' }]}>
                     <FAB
-                        title="Relação"
+                        title="Relação sexual"
                         icon={{
-                            name: 'check',
+                            name: 'home',
                             type: 'font-awesome',
                         }}
                         onPress={() => {
-                            //setIsFabGroupVisible(isFabGroupVisible);
-                            setModalVisible(true);
-
+                            setModal1Visible(true);
                         }}
                     />
                     <Modal
                         animationType="slide"
                         transparent={true}
-                        visible={modalVisible}
+                        visible={modal1Visible}
                         onRequestClose={() =>
-                            setModalVisible(false)
+                            setModal1Visible(false)
                         }
                     >
                         <View style={styles.centeredView}>
@@ -77,7 +86,7 @@ export default function Home() {
                                 <TouchableOpacity
                                     style={styles.button}
                                     onPress={() => {
-                                        setModalVisible(false);
+                                        setModal1Visible(false);
                                     }}
                                 >
                                     <Text style={styles.buttonText}>X</Text>
@@ -98,24 +107,80 @@ export default function Home() {
                         </View>
                     </Modal>
                     <FAB
-                        title="Opção 2"
+                        title="  Menstração  "
                         icon={{
                             name: 'trash',
                             type: 'font-awesome',
                         }}
-                        onPress={() => console.log('Opção 2 selecionada')}
+                        onPress={() => setModal2Visible(true)}
                     />
-                    <FAB
-                        title="Opção 3"
-                        icon={{
-                            name: 'edit',
-                            type: 'font-awesome',
-                        }}
-                        onPress={() => console.log('Opção 3 selecionada')}
-                    />
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modal2Visible}
+                        onRequestClose={() => setModal2Visible(false)}
+                    >
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+                                <Text style={styles.texto}>
+                                    Adicionar Menstruações
+                                </Text>
+                                <TouchableOpacity
+                                    style={styles.button}
+                                    onPress={() => {
+                                        setModal2Visible(false);
+                                    }}
+                                >
+                                    <Text style={styles.buttonText}>X</Text>
+                                </TouchableOpacity>
+
+                                <Text style={styles.label}>Data da última menstruação</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    value={selectedDate.toLocaleDateString('pt-BR')}
+                                    onTouchStart={() => setShowDatePicker(true)}
+                                    onChangeText={setSelectedDate}
+                                />
+
+                                {showDatePicker && (
+                                    <DateTimePicker
+                                        value={selectedDate}
+                                        display="spinner"
+                                        onChange={(event, date) => {
+                                            setShowDatePicker(false);
+                                            if (date) {
+                                                setSelectedDate(date);
+                                            }
+                                        }}
+                                    />
+                                )}
+                                <Text style={styles.label}>Intervalo das menstruações</Text>
+                                <TextInput
+                                    placeholder="Intervalo em dias"
+                                    style={styles.input}
+                                    value={intervalo}
+                                    onChangeText={setIntervalo}
+                                />
+                                <Text style={styles.label}>Informaçoes da menstruação</Text>
+                                <TextInput
+                                    placeholder=""
+                                    style={styles.input}
+                                    value={intervalo}
+                                    onChangeText={setIntervalo}
+                                />
+
+                                <TouchableOpacity
+                                    style={styles.button2}
+                                    onPress={handleNextPress}
+                                >
+                                    <Text style={styles.buttonText}>Confirmar</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </Modal>
                 </View>
                 <FAB
-                    title="Opções  "
+                    title=" Escolha         "
                     icon={{
                         name: 'plus',
                         type: 'font-awesome',
@@ -155,12 +220,13 @@ const styles = StyleSheet.create({
         right: 20,
     },
     centeredView: {
+        //backgroundColor: '#F8B8FA',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
     modalView: {
-        backgroundColor: 'white',
+        backgroundColor: '#C60052',
 
         borderRadius: 20,
         padding: 35,
@@ -202,5 +268,20 @@ const styles = StyleSheet.create({
     },
     botaoSelecionado: {
         backgroundColor: '#ff5b8b',
+    },
+    label: {
+        color: '#fff',
+        fontSize: 16,
+        marginBottom: 6,
+        marginTop: 10,
+        marginLeft: 10,
+    },
+    input: {
+        backgroundColor: 'white',
+        width: '100%',
+        height: 40,
+        borderRadius: 20,
+        fontWeight: 'bold',
+        paddingLeft: 20,
     },
 }); 
