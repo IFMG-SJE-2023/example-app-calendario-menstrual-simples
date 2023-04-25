@@ -163,7 +163,7 @@ export default function Home() {
                                 />
                                 <Text style={styles.label}>Informaçoes da menstruação</Text>
                                 <TextInput
-                                    placeholder=""
+                                    placeholder="Observações sobre o ciclo"
                                     style={styles.input}
                                     value={intervalo}
                                     onChangeText={setIntervalo}
