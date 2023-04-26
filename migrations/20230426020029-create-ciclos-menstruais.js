@@ -10,13 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       id_usuario: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Users',
-          key: 'id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade',
+        type: Sequelize.INTEGER
       },
       data_inicio: {
         type: Sequelize.DATE

@@ -10,13 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       id_ciclo_menstrual: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'CiclosMenstruais',
-          key: 'id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade',
+        type: Sequelize.INTEGER
       },
       data_registro: {
         type: Sequelize.DATE
