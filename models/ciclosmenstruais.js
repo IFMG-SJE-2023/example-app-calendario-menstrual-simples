@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      CiclosMenstruais.belongsTo(models.User)
+      CiclosMenstruais.hasMany(models.RegistrosDiarios);
     }
   }
   CiclosMenstruais.init({

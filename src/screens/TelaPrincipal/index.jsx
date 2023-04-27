@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { FontAwesome5 } from 'react-native-vector-icons';
 import { View, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import { StatusBar } from 'react-native';
-import { AuthContext } from '../../../src/contexts/auth';
 import { color } from 'react-native-elements/dist/helpers';
 
 
@@ -10,7 +9,6 @@ const TelaPrincipal = () => {
   const currentDate = new Date();
   const day = currentDate.getDate();
   const month = currentDate.toLocaleString('default', { month: 'long' });
-  //const { user } = useContext(AuthContext);
   const dias = '20';
   const [iconName, setIconName] = useState('bell');
 

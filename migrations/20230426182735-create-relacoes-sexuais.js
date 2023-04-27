@@ -2,21 +2,24 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('RegistrosDiarios', {
+    await queryInterface.createTable('RelacoesSexuais', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      id_ciclo_menstrual: {
-        type: Sequelize.INTEGER
+      id_usuario: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade',
       },
-      data_registro: {
+      data_relacao: {
         type: Sequelize.DATE
-      },
-      sintomas: {
-        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -29,6 +32,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('RegistrosDiarios');
+    await queryInterface.dropTable('RelacoesSexuais');
   }
 };
