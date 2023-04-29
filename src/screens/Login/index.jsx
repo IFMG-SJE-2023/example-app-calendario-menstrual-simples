@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { StyleSheet, Text, View, TextInput, ImageBackground, Alert, TouchableOpacity, KeyboardAvoidingView, Image, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
@@ -7,9 +7,12 @@ import Calendario from '../../../assets/calendario.png'
 import Fundo from '../../../assets/fundo.png'
 import Usuarios from '../../services/sqlite/Usuarios';
 import { StatusBar } from 'react-native';
+import { AuthContext } from '../../../src/contexts/auth';
+
 
 export default function Login() {
   const navigation = useNavigation();
+  const { signIn } = useContext(AuthContext);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [step, setStep] = useState(0);
   const [password, setPassword] = useState('');
@@ -18,52 +21,33 @@ export default function Login() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [repeatpassword, setRepeatPassword] = useState('');
 
-  const usuario = {
+  /* const usuario = {
     nome: name,
     email: email,
     data_nascimento: format(new Date(selectedDate), 'dd/MM/yyyy'),
     senha: password,
-  };
+  } */
 
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
-    setDate(currentDate);
+    setSelectedDate(currentDate);
     setShowDatePicker(false);
-  };
-
-  const handleSubmit = (email, password) => {
-    /*     if (email === '') {
-          Alert.alert('Informe seu email');
-          return;
-        }
-        if (password === '') {
-          Alert.alert('Informe sua senha');
-          return;
-        }
-        //precisa mandar os dados para o objeto no singIN
-        
-        Usuarios.findByLoginAndPassword(email, password)
-          .then((result) => {
-            navigation.navigate('TelaPrincipal');
-          })
-          .catch((error) => {
-            Alert.alert('Os dados digitados não correspondem a nenhum usuário.');
-            //console.error(error);
-          });
-       */
-    navigation.navigate('TelaPrincipal');
-  };
-  function changeForm() {
-    if (step === 0) {
-      setStep(1);
-    } else {
-      setStep(0);
-    }
   }
 
+  const handleSubmit = (email, password) => {
+    if (email === '') {
+      Alert.alert('Informe seu email');
+      return;
+    }
+    if (password === '') {
+      Alert.alert('Informe sua senha');
+      return;
+    }
+    signIn(email, password);
+  }
   function validateForm() {
-    /* if (name === '') {
+    if (name === '') {
       Alert.alert('Informe seu nome');
       return;
     }
@@ -91,11 +75,20 @@ export default function Login() {
           .catch((error) => console.error(error));
         navigation.navigate('Cadastro');
         changeForm();
-      }); */
-    
+      });
+  }
+  function changeForm() {
+    if (step === 0) {
+      setStep(1);
+    } else {
+      setStep(0);
+    }
   }
 
+
+
   return (
+
     <ImageBackground
 
       style={styles.container}
@@ -142,10 +135,10 @@ export default function Login() {
             <Text style={styles.buttonText}>Entrar</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={changeForm}>
+          {<TouchableOpacity onPress={changeForm}>
             <Text style={[styles.label, { textAlign: 'center' }]}>Já tem conta ? FAÇA LOGIN</Text>
           </TouchableOpacity>
-
+          }
         </KeyboardAvoidingView>
       ) : (
         <View style={[styles.form, { marginTop: 170 }]}>
@@ -157,7 +150,6 @@ export default function Login() {
             keyboardAppearance='default'
             value={name}
             onChangeText={setName}
-
           />
           <Text style={styles.label}>E-mail</Text>
 
@@ -196,8 +188,6 @@ export default function Login() {
             secureTextEntry={true}
             value={password}
             onChangeText={setPassword}
-
-
           />
           <Text style={styles.label}>Repita sua senha</Text>
 
@@ -207,18 +197,14 @@ export default function Login() {
             secureTextEntry={true}
             value={repeatpassword}
             onChangeText={setRepeatPassword}
-
-
           />
           <TouchableOpacity style={styles.button} onPress={validateForm}>
-            <Text style={styles.buttonText}>Cadastrar
-            </Text>
+            <Text style={styles.buttonText}>Cadastrar</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={changeForm}>
             <Text style={[styles.label, { textAlign: 'center' }]}>Ja possuo conta!</Text>
           </TouchableOpacity>
-
         </View>
       )}
 
