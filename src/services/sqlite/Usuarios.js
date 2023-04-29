@@ -94,13 +94,14 @@ const findByEmailandName = (email, nome) => {
         //-----------------------
         (_, { rows }) => {
           if (rows.length > 0) resolve(rows._array);
-          else reject("Objeto não encontrado: email=" + email + "password=" + nome); // nenhum registro encontrado
+          else reject("Objeto não encontrado: email=" + email + " nome=" + nome); // nenhum registro encontrado
         },
         (_, error) => reject(error) // erro interno em tx.executeSql
       );
     });
   });
 };
+
 
 const all = () => {
   return new Promise((resolve, reject) => {

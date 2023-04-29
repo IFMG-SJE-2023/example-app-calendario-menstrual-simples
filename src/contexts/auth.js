@@ -1,5 +1,6 @@
 import React, { createContext, useState, Alert } from 'react';
 import dbUsuarios from '../services/sqlite/Usuarios';
+import dbMenstruacoes from '../services/sqlite/Menstruacoes';
 import { useNavigation } from '@react-navigation/native';
 
 export const AuthContext = createContext({})
@@ -10,6 +11,14 @@ function AuthProvider({ children }) {
         email: null,
         name: null,
         status: false,
+    });
+    const [menstruacao, setMenstruacao] = useState({
+        id: null,
+        data_ultima_menstruacao: null,
+        data_proxima_menstruacao: null,
+        informacoes_menstruais: null,
+        intervalo: null,
+        idUsuario: null,
     });
     const navigation = useNavigation();
 
@@ -28,19 +37,43 @@ function AuthProvider({ children }) {
             .catch((error) => {
             });
     }
-/*     async function checkResultUser(email, nome) {
-        try {
-            const result = await dbUsuarios.findByEmailandName(email, nome);
-            // Ação a ser executada se o resultado for verdadeiro
-            console.log('Resultado encontrado:', result);
-        } catch (error) {
-            // Ação a ser executada se o resultado for falso
-            console.log('Erro:', error);
-        }
-    } */
+    function createAccount(user) {
+        dbUsuarios.create(user)
+            .then((id) => {
+                console.log('Usuário criado com sucesso!');
+                setUser({
+                    id: id,
+                    email: user.email,
+                    name: user.nome,
+                    status: true,
+                });
+                navigation.navigate('Cadastro');
+            })
+            .catch((error) => {
+                console.log('Erro ao criar usuário: ' + error.message);
+            });
+    }
+    function finalizeRegistration(menstruacao) {
+        dbMenstruacoes.create(menstruacao, user.id_usuario)
+            .then((id) => {
+                console.log('Usuário criado com sucesso!');
+                setUser({
+                    id: id,
+                    email: user.email,
+                    name: user.nome,
+                    status: true,
+                });
+                navigation.navigate('Cadastro');
+            })
+            .catch((error) => {
+                console.log('Erro ao criar usuário: ' + error.message);
+            });
+
+    }
+
 
     return (
-        <AuthContext.Provider value={{user, signIn }}>
+        <AuthContext.Provider value={{ user, signIn, createAccount, finalizeRegistration}}>
             {children}
         </AuthContext.Provider>
     )

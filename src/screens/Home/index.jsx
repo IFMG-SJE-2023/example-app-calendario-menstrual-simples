@@ -9,7 +9,7 @@ import dbUsuarios from '../../services/sqlite/Usuarios';
 
 export default function Home() {
     const [showBox, setShowBox] = useState(false);
-    const heartDates = ['2023-02-14', '2023-03-08', '2023-04-22'];
+    const heartDates = [];
     const [modalVisible, setModalVisible] = useState(false);
     const [isFabGroupVisible, setIsFabGroupVisible] = useState(false);
     const [relacaoSexual, setRelacaoSexual] = useState('');

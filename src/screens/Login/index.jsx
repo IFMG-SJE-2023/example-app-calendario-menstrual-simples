@@ -12,7 +12,7 @@ import { AuthContext } from '../../../src/contexts/auth';
 
 export default function Login() {
   const navigation = useNavigation();
-  const { signIn } = useContext(AuthContext);
+  const { signIn, createAccount} = useContext(AuthContext);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [step, setStep] = useState(0);
   const [password, setPassword] = useState('');
@@ -21,12 +21,12 @@ export default function Login() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [repeatpassword, setRepeatPassword] = useState('');
 
-  /* const usuario = {
+  const usuario = {
     nome: name,
     email: email,
     data_nascimento: format(new Date(selectedDate), 'dd/MM/yyyy'),
     senha: password,
-  } */
+  }
 
 
   const onChange = (event, selectedDate) => {
@@ -36,7 +36,7 @@ export default function Login() {
   }
 
   const handleSubmit = (email, password) => {
-    if (email === '') {
+    /* if (email === '') {
       Alert.alert('Informe seu email');
       return;
     }
@@ -44,9 +44,12 @@ export default function Login() {
       Alert.alert('Informe sua senha');
       return;
     }
-    signIn(email, password);
+    signIn(email, password); */
+    navigation.navigate('TelaPrincipal');
+
   }
   function validateForm() {
+     /* 
     if (name === '') {
       Alert.alert('Informe seu nome');
       return;
@@ -66,16 +69,10 @@ export default function Login() {
     if (password !== repeatpassword) {
       Alert.alert('As senhas nao conferem');
       return;
-    }
-    Usuarios.findByEmailandName(email, name)
-      .then((id) => Alert.alert('Usuario Existente.'))
-      .catch((error) => {
-        Usuarios.create(usuario)
-          .then((id) => console.log("Objeto inserido com sucesso! ID: ", id))
-          .catch((error) => console.error(error));
-        navigation.navigate('Cadastro');
-        changeForm();
-      });
+    } */
+    //createAccount(usuario);
+    navigation.navigate('Cadastro');
+
   }
   function changeForm() {
     if (step === 0) {

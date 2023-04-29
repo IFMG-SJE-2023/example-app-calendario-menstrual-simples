@@ -1,19 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, KeyboardAvoidingView, ViewComponent, TextInput, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Fundo from '../../../assets/fundo.png';
+import { AuthContext } from '../../../src/contexts/auth';
+
 
 export default function App() {
+  const { user, finalizeRegistration } = useContext(AuthContext);
   const navigation = useNavigation();
   const [ultMenstruacao, setultMenstruacao] = useState('');
   const [step, setStep] = useState(0);
   const [respostaSelecionada, setRespostaSelecionada] = useState(null);
-  const [intervalo, setIntervalo] = useState('');
+  const [interval, setInterval] = useState('');
+  const [menstruacao, setMenstruacao] = useState({
+    id: null,
+    data_ultima_menstruacao: null,
+    data_proxima_menstruacao: null,
+    informacoes_menstruais: null,
+    intervalo: null,
+  });
 
   const handlePressBotao = (resposta) => {
     if (resposta == 'Não') {
-      setIntervalo('28');
+      setInterval('28');
+      setMenstruacao({
+        data_ultima_menstruacao:  ultMenstruacao,
+        informacoes_menstruais: null,
+        intervalo: interval,
+    });
+      finalizeRegistration(menstruacao, user.id);
       navigation.navigate('Login');
     } else {
       changeForm();
@@ -106,11 +122,11 @@ export default function App() {
           <TextInput
             style={styles.input}
             placeholder="Intervalo em dias"
-            onChangeText={text => setIntervalo(text)}
+            onChangeText={text => setInterval(text)}
             keyboardType='numeric'
-            value={intervalo}
+            value={interval}
           />
-          <TouchableOpacity style={styles.button2} disabled={!intervalo} onPress={() => handleConfirmarPress(intervalo)}>
+          <TouchableOpacity style={styles.button2} disabled={!interval} onPress={() => handleConfirmarPress(interval)}>
             <Text style={styles.buttonText}>Confirmar</Text>
           </TouchableOpacity>
         </View>
