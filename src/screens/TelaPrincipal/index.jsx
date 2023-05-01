@@ -11,6 +11,7 @@ const TelaPrincipal = () => {
   const day = currentDate.getDate();
   const month = currentDate.toLocaleString('default', { month: 'long' });
   const { user} = useContext(AuthContext);
+  //const { user } = useContext(AuthContext);
   const dias = '20';
   const [iconName, setIconName] = useState('bell');
 

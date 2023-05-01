@@ -2,7 +2,7 @@ import db from "./SQLiteBase";
 
 db.transaction((tx) => {
     tx.executeSql(
-      "CREATE TABLE IF NOT EXISTS relacoes_sexuais (id INTEGER PRIMARY KEY AUTOINCREMENT, parceiro TEXT, duracao TEXT, satisfeito BOOLEAN);"
+      "CREATE TABLE IF NOT EXISTS relacoes_sexuais (id INTEGER PRIMARY KEY AUTOINCREMENT, id_usuario INTEGER, FOREIGN KEY(id_usuario) REFERENCES usuarios(id));"
     );
   });
   
