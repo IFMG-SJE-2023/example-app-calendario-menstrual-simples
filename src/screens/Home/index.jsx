@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
-import store from '../../../store';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, SafeAreaView, Alert, TextInput } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FAB } from 'react-native-elements';
 import { StatusBar } from 'react-native';
-
-
+import config from '../../../config/config.json';
+import { setCurrentUser } from '../../../store';
+import store from '../../../store';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const Home = ({ currentUser }) => {
@@ -26,18 +26,30 @@ const Home = ({ currentUser }) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [intervalo, setIntervalo] = useState();
 
-    const handleNextPress = () => {
-        if (relacaoSexual) {
-
-        } else {
-            Alert.alert('Selecione a data para continuar.');
-        }
-    }
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
         setDate(currentDate);
         setShowDatePicker(false);
     };
+    async function addRelacaoSexual(id_usuario, data) {
+        try {
+            const response = await fetch(config.urlRootNode + 'add-relacao-sexual', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id_usuario,
+                    data
+                })
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     return (
         <SafeAreaView style={[styles.container]}>
             <StatusBar hidden={true} />
@@ -102,7 +114,7 @@ const Home = ({ currentUser }) => {
                                     />
                                 </View>
                                 <TouchableOpacity style={styles.button2}
-                                    onPress={handleNextPress}>
+                                    onPress={() => addRelacaoSexual(currentUser.id,selectedDate)}>
                                     <Text style={styles.buttonText}>Confirmar</Text>
                                 </TouchableOpacity>
                             </View>
@@ -173,7 +185,7 @@ const Home = ({ currentUser }) => {
 
                                 <TouchableOpacity
                                     style={styles.button2}
-                                    onPress={handleNextPress}
+                                    //onPress={ola}
                                 >
                                     <Text style={styles.buttonText}>Confirmar</Text>
                                 </TouchableOpacity>

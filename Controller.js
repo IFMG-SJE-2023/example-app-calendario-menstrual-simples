@@ -35,7 +35,7 @@ app.post('/login', async (req, res) => {
         if (user) {
             console.log(user.id);
             res.send(JSON.stringify({
-                id : user.id,
+                id: user.id,
                 name: user.name,
                 email: user.email,
                 message: 'Login bem-sucedido!'
@@ -46,6 +46,19 @@ app.post('/login', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send(JSON.stringify({ message: 'Ocorreu um erro ao fazer login!' }));
+    }
+});
+app.post('/add-relacao-sexual', async (req, res) => {
+    try {
+        const { id_usuario, data } = req.body;
+        const relacaoSexual = await model.RelacaoSexual.create({
+            id_usuario,
+            data
+        });
+        res.status(201).json(relacaoSexual);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao adicionar relação sexual' });
     }
 });
 
