@@ -1,11 +1,13 @@
+import { connect } from 'react-redux';
+import store from '../../../store';
 import React, { useState } from 'react';
+
 import { FontAwesome5 } from 'react-native-vector-icons';
 import { View, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import { StatusBar } from 'react-native';
 import { color } from 'react-native-elements/dist/helpers';
 
-
-const TelaPrincipal = () => {
+const TelaPrincipal = ({ currentUser }) => {
   const currentDate = new Date();
   const day = currentDate.getDate();
   const month = currentDate.toLocaleString('default', { month: 'long' });
@@ -33,12 +35,12 @@ const TelaPrincipal = () => {
           onPress={handlePress} />
       </View>
 
+      <Text>Olá, {currentUser.name}</Text>
       <ScrollView>
-
         <Text style={styles.mensagem}>{
           "Menstruação em"
         }</Text>
-        <Text style={styles.date}>{
+        <Text style={styles.daxte}>{
           dias
         }</Text>
         <Text style={styles.mensagem}>{
@@ -58,6 +60,12 @@ const TelaPrincipal = () => {
     </SafeAreaView>
   );
 };
+
+const mapStateToProps = (state) => ({
+  currentUser: state.currentUser
+});
+
+export default connect(mapStateToProps)(TelaPrincipal);
 
 const styles = StyleSheet.create({
   container: {
@@ -106,5 +114,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-export default TelaPrincipal;

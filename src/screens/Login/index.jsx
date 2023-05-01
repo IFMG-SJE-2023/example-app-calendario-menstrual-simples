@@ -7,6 +7,8 @@ import Calendario from '../../../assets/calendario.png'
 import Fundo from '../../../assets/fundo.png'
 import { StatusBar } from 'react-native';
 import config from '../../../config/config.json';
+import { setCurrentUser } from '../../../store';
+import store from '../../../store';
 
 export default function Login() {
   const navigation = useNavigation();
@@ -35,190 +37,227 @@ export default function Login() {
 
       })
     })
-}
-
-const onChange = (event, selectedDate) => {
-  const currentDate = selectedDate;
-  setDate(currentDate);
-  setShowDatePicker(false);
-};
-
-const handleSubmit = (email, password) => {
-  if (email === '') {
-    Alert.alert('Informe seu email');
-    return;
-  }
-  if (password === '') {
-    Alert.alert('Informe sua senha');
-    return;
   }
 
-  navigation.navigate('TelaPrincipal');
-};
-function changeForm() {
-  if (step === 0) {
-    setStep(1);
-  } else {
-    setStep(0);
-  }
-}
+  async function loginUser() {
+    try {
+      const response = await fetch(config.urlRootNode + 'login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          emailUser: email,
+          passwordUser: password
+        })
+      });
 
-function validateForm() {
-  if (name === '') {
-    Alert.alert('Informe seu nome');
-    return;
-  }
-  if (email === '') {
-    Alert.alert('Preencha o campo E-mail');
-    return;
-  }
-  if (password === '') {
-    Alert.alert('Preencha o campo senha');
-    return;
-  }
-  if (repeatpassword === '') {
-    Alert.alert('Repita sua senha');
-    return;
-  }
-  if (password !== repeatpassword) {
-    Alert.alert('As senhas nao conferem');
-    return;
-  }
+      const data = await response.json();
 
+      if (response.ok) {
+        // Login bem-sucedido, despache a action setCurrentUser com as informações do usuário
+        const user = {
+          
+          name: data.name,
+          email: data.email
+        };
+        store.dispatch(setCurrentUser(user));
 
-}
-
-return (
-  <ImageBackground
-
-    style={styles.container}
-    source={
-      Fundo
+        // Navegue para a tela principal
+        navigation.navigate('TelaPrincipal');
+      } else {
+        // Login falhou, exiba uma mensagem de erro para o usuário
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      // Lide com o erro aqui, como exibir uma mensagem de erro para o usuário
     }
-    resizeMode="stretch"
-  >
-    <StatusBar hidden={true} />
-
-    <Image style={styles.iconecalendario} source={Calendario} resizeMode="contain" />
+  }
 
 
-    <Text style={styles.title}>SEJÁ BEM-VINDA AO
-      NOSSO APP </Text>
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setDate(currentDate);
+    setShowDatePicker(false);
+  };
 
-    <Text style={styles.subtitle}>Monitore e preveja sua menstruação, anticoncepcionais,
-      tente engravidar e acompanhe a gravidez em um só app.
-      Atinja todas as suas metas</Text>
+  const handleSubmit = (email, password) => {
+    if (email === '') {
+      Alert.alert('Informe seu email');
+      return;
+    }
+    if (password === '') {
+      Alert.alert('Informe sua senha');
+      return;
+    }
 
-    {step == 0 ? (
-      <KeyboardAvoidingView style={styles.form} behavior="padding">
+    navigation.navigate('TelaPrincipal');
+  };
+  function changeForm() {
+    if (step === 0) {
+      setStep(1);
+    } else {
+      setStep(0);
+    }
+  }
 
-        <Text style={styles.label}>E-mail</Text>
+  function validateForm() {
+    if (name === '') {
+      Alert.alert('Informe seu nome');
+      return;
+    }
+    if (email === '') {
+      Alert.alert('Preencha o campo E-mail');
+      return;
+    }
+    if (password === '') {
+      Alert.alert('Preencha o campo senha');
+      return;
+    }
+    if (repeatpassword === '') {
+      Alert.alert('Repita sua senha');
+      return;
+    }
+    if (password !== repeatpassword) {
+      Alert.alert('As senhas nao conferem');
+      return;
+    }
 
-        <TextInput
-          style={styles.input}
-          placeholder=" Digite seu E-mail"
-          keyboardType='email-address'
-          value={email}
-          onChangeText={setEmail}
-        />
-        <Text style={styles.label}>Senha</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder=" Sua senha secreta"
-          secureTextEntry={true}
-          value={password}
-          onChangeText={setPassword}
-        />
+  }
 
-        <TouchableOpacity style={styles.button} onPress={() => handleSubmit(email, password)}>
-          <Text style={styles.buttonText}>Entrar</Text>
-        </TouchableOpacity>
+  return (
+    <ImageBackground
 
-        <TouchableOpacity onPress={changeForm}>
-          <Text style={[styles.label, { textAlign: 'center' }]}>Já tem conta ? FAÇA LOGIN</Text>
-        </TouchableOpacity>
+      style={styles.container}
+      source={
+        Fundo
+      }
+      resizeMode="stretch"
+    >
+      <StatusBar hidden={true} />
 
-      </KeyboardAvoidingView>
-    ) : (
-      <View style={[styles.form, { marginTop: 170 }]}>
-        <Text style={styles.label}>Nome</Text>
+      <Image style={styles.iconecalendario} source={Calendario} resizeMode="contain" />
 
-        <TextInput
-          style={styles.input}
-          placeholder=" Seu nome completo"
-          keyboardAppearance='default'
-          value={name}
-          onChangeText={setName}
 
-        />
-        <Text style={styles.label}>E-mail</Text>
+      <Text style={styles.title}>SEJÁ BEM-VINDA AO
+        NOSSO APP </Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder=" Digite seu usuário"
-          keyboardType='email-address'
-          value={email}
-          onChangeText={setEmail}
-        />
-        <Text style={styles.label}>Data de Nascimento</Text>
-        <TextInput
-          style={styles.input}
-          value={selectedDate.toLocaleDateString('pt-BR')}
-          onTouchStart={() => setShowDatePicker(true)}
-          onChangeText={setEmail}
-        />
+      <Text style={styles.subtitle}>Monitore e preveja sua menstruação, anticoncepcionais,
+        tente engravidar e acompanhe a gravidez em um só app.
+        Atinja todas as suas metas</Text>
 
-        {showDatePicker && (
-          <DateTimePicker
-            value={selectedDate}
-            display="spinner"
-            onChange={(event, date) => {
-              setShowDatePicker(false);
-              if (date) {
-                setSelectedDate(date);
-              }
-            }}
+      {step == 0 ? (
+        <KeyboardAvoidingView style={styles.form} behavior="padding">
+
+          <Text style={styles.label}>E-mail</Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder=" Digite seu E-mail"
+            keyboardType='email-address'
+            value={email}
+            onChangeText={setEmail}
           />
-        )}
-        <Text style={styles.label}>Senha</Text>
+          <Text style={styles.label}>Senha</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder=" Sua senha secreta"
-          secureTextEntry={true}
-          value={password}
-          onChangeText={setPassword}
+          <TextInput
+            style={styles.input}
+            placeholder=" Sua senha secreta"
+            secureTextEntry={true}
+            value={password}
+            onChangeText={setPassword}
+          />
+
+          <TouchableOpacity style={styles.button} onPress={loginUser}>
+            <Text style={styles.buttonText}>Entrar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={changeForm}>
+            <Text style={[styles.label, { textAlign: 'center' }]}>Já tem conta ? FAÇA LOGIN</Text>
+          </TouchableOpacity>
+
+        </KeyboardAvoidingView>
+      ) : (
+        <View style={[styles.form, { marginTop: 170 }]}>
+          <Text style={styles.label}>Nome</Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder=" Seu nome completo"
+            keyboardAppearance='default'
+            value={name}
+            onChangeText={setName}
+
+          />
+          <Text style={styles.label}>E-mail</Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder=" Digite seu usuário"
+            keyboardType='email-address'
+            value={email}
+            onChangeText={setEmail}
+          />
+          <Text style={styles.label}>Data de Nascimento</Text>
+          <TextInput
+            style={styles.input}
+            value={selectedDate.toLocaleDateString('pt-BR')}
+            onTouchStart={() => setShowDatePicker(true)}
+            onChangeText={setEmail}
+          />
+
+          {showDatePicker && (
+            <DateTimePicker
+              value={selectedDate}
+              display="spinner"
+              onChange={(event, date) => {
+                setShowDatePicker(false);
+                if (date) {
+                  setSelectedDate(date);
+                }
+              }}
+            />
+          )}
+          <Text style={styles.label}>Senha</Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder=" Sua senha secreta"
+            secureTextEntry={true}
+            value={password}
+            onChangeText={setPassword}
 
 
-        />
-        <Text style={styles.label}>Repita sua senha</Text>
+          />
+          <Text style={styles.label}>Repita sua senha</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder=" Sua senha secreta"
-          secureTextEntry={true}
-          value={repeatpassword}
-          onChangeText={setRepeatPassword}
-
-
-        />
-        <TouchableOpacity style={styles.button} onPress={registerUser}>
-          <Text style={styles.buttonText}>Cadastrar
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={changeForm}>
-          <Text style={[styles.label, { textAlign: 'center' }]}>Ja possuo conta!</Text>
-        </TouchableOpacity>
-
-      </View>
-    )}
-
-  </ImageBackground>
+          <TextInput
+            style={styles.input}
+            placeholder=" Sua senha secreta"
+            secureTextEntry={true}
+            value={repeatpassword}
+            onChangeText={setRepeatPassword}
 
 
-);
+          />
+          <TouchableOpacity style={styles.button} onPress={registerUser}>
+            <Text style={styles.buttonText}>Cadastrar
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={changeForm}>
+            <Text style={[styles.label, { textAlign: 'center' }]}>Ja possuo conta!</Text>
+          </TouchableOpacity>
+
+        </View>
+      )}
+
+    </ImageBackground>
+
+
+  );
 }
 
 const styles = StyleSheet.create({

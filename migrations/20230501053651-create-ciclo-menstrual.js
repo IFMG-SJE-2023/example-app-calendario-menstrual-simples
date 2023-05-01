@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('CiclosMenstruais', {
+    await queryInterface.createTable('Ciclo_Menstruals', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,17 +11,17 @@ module.exports = {
       },
       id_usuario: {
         type: Sequelize.INTEGER,
-        references: {
-          model: 'Users',
-          key: 'id',
+        references:{
+          model:'Users',
+          key:'id'
         },
-        onUpdate: 'cascade',
-        onDelete: 'cascade',
+        onUpdate:'cascade',
+        onDelete:'cascade'
       },
       data_inicio: {
         type: Sequelize.DATE
       },
-      data_fim: {
+      data_final: {
         type: Sequelize.DATE
       },
       createdAt: {
@@ -35,6 +35,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('CiclosMenstruais');
+    await queryInterface.dropTable('Ciclo_Menstruals');
   }
 };
