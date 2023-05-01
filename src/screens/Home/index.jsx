@@ -1,3 +1,5 @@
+import { connect } from 'react-redux';
+import store from '../../../store';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, SafeAreaView, Alert, TextInput } from 'react-native';
 import { Calendar } from 'react-native-calendars';
@@ -8,7 +10,7 @@ import { StatusBar } from 'react-native';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function Home() {
+const Home = ({ currentUser }) => {
     //marcadores
     const heartDates = ['2023-02-14', '2023-03-08', '2023-04-22'];
     //Data
@@ -189,10 +191,14 @@ export default function Home() {
                 />
             </View>
 
-
         </SafeAreaView >
     );
 }
+const mapStateToProps = (state) => ({
+    currentUser: state.currentUser
+});
+
+export default connect(mapStateToProps)(Home);
 const styles = StyleSheet.create({
     container: {
         flex: 1,

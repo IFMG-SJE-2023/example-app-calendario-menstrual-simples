@@ -51,18 +51,19 @@ export default function Login() {
           passwordUser: password
         })
       });
-
-      const data = await response.json();
-
+  
+      const data = response.ok ? await response.json() : { message: 'Erro ao fazer login' };
+  
       if (response.ok) {
         // Login bem-sucedido, despache a action setCurrentUser com as informações do usuário
         const user = {
-          
+          id : data.id,
           name: data.name,
           email: data.email
         };
+        console.log(user);
         store.dispatch(setCurrentUser(user));
-
+  
         // Navegue para a tela principal
         navigation.navigate('TelaPrincipal');
       } else {
@@ -74,6 +75,7 @@ export default function Login() {
       // Lide com o erro aqui, como exibir uma mensagem de erro para o usuário
     }
   }
+  
 
 
   const onChange = (event, selectedDate) => {

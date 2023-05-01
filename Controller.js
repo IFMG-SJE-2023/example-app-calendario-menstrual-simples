@@ -32,9 +32,14 @@ app.post('/login', async (req, res) => {
                 password: passwordUser
             }
         });
-
         if (user) {
-            res.send(JSON.stringify({ message: 'Login bem-sucedido!' }));
+            console.log(user.id);
+            res.send(JSON.stringify({
+                id : user.id,
+                name: user.name,
+                email: user.email,
+                message: 'Login bem-sucedido!'
+            }));
         } else {
             res.status(401).send(JSON.stringify({ message: 'Credenciais inválidas!' }));
         }
@@ -43,6 +48,8 @@ app.post('/login', async (req, res) => {
         res.status(500).send(JSON.stringify({ message: 'Ocorreu um erro ao fazer login!' }));
     }
 });
+
+
 //Start server
 let port = process.env.PORT || 3000;
 app.listen(port, (req, res) => {

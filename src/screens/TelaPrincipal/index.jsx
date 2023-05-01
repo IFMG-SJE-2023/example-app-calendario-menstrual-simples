@@ -10,7 +10,7 @@ import { color } from 'react-native-elements/dist/helpers';
 const TelaPrincipal = ({ currentUser }) => {
   const currentDate = new Date();
   const day = currentDate.getDate();
-  const month = currentDate.toLocaleString('default', { month: 'long' });
+  const month = currentDate.toLocaleString('PT-BR', { month: 'long' });
   const dias = '20';
   const [iconName, setIconName] = useState('bell');
 
@@ -34,13 +34,13 @@ const TelaPrincipal = ({ currentUser }) => {
           style={styles.bellIcon}
           onPress={handlePress} />
       </View>
+      
 
-      <Text>Olá, {currentUser.name}</Text>
       <ScrollView>
         <Text style={styles.mensagem}>{
           "Menstruação em"
         }</Text>
-        <Text style={styles.daxte}>{
+        <Text style={styles.date}>{
           dias
         }</Text>
         <Text style={styles.mensagem}>{
