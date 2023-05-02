@@ -40,8 +40,9 @@ const App = ({ currentUser }) => {
   const handlePressBotao = (resposta) => {
     if (resposta == 'Não') {
       setIntervalo('28');
-      console.log(currentUser.id, ultMenstruacao, moment(ultMenstruacao).add(4, 'days').format('YYYY-MM-DD'), intervalo);
-      addCicloMenstrual(currentUser.id, ultMenstruacao, moment(ultMenstruacao).add(4, 'days').format('YYYY-MM-DD'), intervalo);
+      const dtInicio = moment(ultMenstruacao).format('YYYY-MM-DD');
+      const dtFim = moment(ultMenstruacao).add(4, 'days').format('YYYY-MM-DD');
+      addCicloMenstrual(currentUser.id, dtInicio, dtFim, intervalo);
     } else {
       changeForm();
     }
