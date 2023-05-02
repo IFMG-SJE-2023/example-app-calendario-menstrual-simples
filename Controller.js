@@ -83,7 +83,21 @@ app.post('/add-relacao-sexual', async (req, res) => {
         res.status(500).json({ message: 'Erro ao adicionar relação sexual' });
     }
 });
-
+app.post('/add-ciclo-menstrual', async (req, res) => {
+  try {
+      const { id_usuario, dataInicio, dataFim, intervalo} = req.body;
+      const cicloMenstrual = await model.Ciclo_Menstrual.create({
+          id_usuario,
+          dataInicio,
+          dataFim,
+          intervalo
+      });
+      res.status(201).json(cicloMenstrual);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Erro ao adicionar ciclo menstrual' });
+  }
+});
 
 //Start server
 let port = process.env.PORT || 3000;

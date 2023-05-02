@@ -7,6 +7,7 @@ import { FAB } from 'react-native-elements';
 import { StatusBar } from 'react-native';
 import { setCurrentUser } from '../../../store';
 import store from '../../../store';
+import config from '../../../config/config.json';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const Home = ({ currentUser }) => {

@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   Ciclo_Menstrual.init({
     id_usuario: DataTypes.INTEGER,
     data_inicio: DataTypes.DATE,
-    data_final: DataTypes.DATE
+    data_final: DataTypes.DATE,
+    intervalo: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Ciclo_Menstrual',

@@ -6,19 +6,42 @@ import Fundo from '../../../assets/fundo.png';
 import { connect } from 'react-redux';
 import { setCurrentUser } from '../../../store';
 import store from '../../../store';
+import moment from 'moment';
+import config from '../../../config/config.json';
 
-const App= ({ currentUser }) => {
+const App = ({ currentUser }) => {
   const navigation = useNavigation();
   const [ultMenstruacao, setultMenstruacao] = useState('');
   const [step, setStep] = useState(0);
   const [respostaSelecionada, setRespostaSelecionada] = useState(null);
   const [intervalo, setIntervalo] = useState('');
 
-  
+  async function addCicloMenstrual(id_usuario, dataInicio, dataFim, intervalo) {
+    try {
+      const response = await fetch(config.urlRootNode + 'add-ciclo-menstrual', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id_usuario,
+          dataInicio,
+          dataFim, 
+          intervalo
+        })
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const handlePressBotao = (resposta) => {
     if (resposta == 'Não') {
       setIntervalo('28');
-      navigation.navigate('Login');
+      console.log(currentUser.id, ultMenstruacao, moment(ultMenstruacao).add(4, 'days').format('YYYY-MM-DD'), intervalo);
+      addCicloMenstrual(currentUser.id, ultMenstruacao, moment(ultMenstruacao).add(4, 'days').format('YYYY-MM-DD'), intervalo);
     } else {
       changeForm();
     }
@@ -43,7 +66,7 @@ const App= ({ currentUser }) => {
   const handleConfirmarPress = (valor) => {
     if (valor) {
       setIntervalo(valor);
-      navigation.navigate('Login');
+      addCicloMenstrual(currentUser.id, ultMenstruacao, ultMenstruacao+4, intervalo);
     }
   }
   return (

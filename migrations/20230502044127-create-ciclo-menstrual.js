@@ -24,6 +24,9 @@ module.exports = {
       data_final: {
         type: Sequelize.DATE
       },
+      intervalo: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
