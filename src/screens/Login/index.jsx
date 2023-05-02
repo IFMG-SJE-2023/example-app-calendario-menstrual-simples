@@ -22,22 +22,37 @@ export default function Login() {
   const [repeatpassword, setRepeatPassword] = useState('');
 
   async function registerUser() {
-    let request = await fetch(config.urlRootNode + 'create', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-
-      },
-      body: JSON.stringify({
-        nomeUser: name,
-        data_nascimentoUser: selectedDate,
-        emailUser: email,
-        passwordUser: password
-
-      })
-    })
+    try {
+      let request = await fetch(config.urlRootNode + 'create', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          nomeUser: name,
+          data_nascimentoUser: selectedDate,
+          emailUser: email,
+          passwordUser: password
+        })
+      });
+  
+      let response = await request.json();
+  
+      if (response.success) {
+        const user = response.user;
+        console.log(user);
+        store.dispatch(setCurrentUser(user));
+        navigation.navigate('Cadastro');
+      } else {
+        // exibir mensagem de erro
+      }
+    } catch (error) {
+      console.error(error);
+      // exibir mensagem de erro
+    }
   }
+  
 
   async function loginUser() {
     try {
@@ -55,7 +70,6 @@ export default function Login() {
       const data = response.ok ? await response.json() : { message: 'Erro ao fazer login' };
   
       if (response.ok) {
-        // Login bem-sucedido, despache a action setCurrentUser com as informações do usuário
         const user = {
           id : data.id,
           name: data.name,

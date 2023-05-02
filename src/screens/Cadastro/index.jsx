@@ -3,15 +3,18 @@ import { useNavigation } from '@react-navigation/native';
 import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, KeyboardAvoidingView, ViewComponent, TextInput, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Fundo from '../../../assets/fundo.png';
+import { connect } from 'react-redux';
+import { setCurrentUser } from '../../../store';
+import store from '../../../store';
 
-
-export default function App() {
+const App= ({ currentUser }) => {
   const navigation = useNavigation();
   const [ultMenstruacao, setultMenstruacao] = useState('');
   const [step, setStep] = useState(0);
   const [respostaSelecionada, setRespostaSelecionada] = useState(null);
   const [intervalo, setIntervalo] = useState('');
 
+  
   const handlePressBotao = (resposta) => {
     if (resposta == 'Não') {
       setIntervalo('28');
@@ -120,7 +123,11 @@ export default function App() {
     </ImageBackground >
   );
 }
+const mapStateToProps = (state) => ({
+  currentUser: state.currentUser
+});
 
+export default connect(mapStateToProps)(App);
 
 const styles = StyleSheet.create({
   container: {

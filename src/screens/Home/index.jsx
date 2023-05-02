@@ -5,7 +5,6 @@ import { Calendar } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FAB } from 'react-native-elements';
 import { StatusBar } from 'react-native';
-import config from '../../../config/config.json';
 import { setCurrentUser } from '../../../store';
 import store from '../../../store';
 import DateTimePicker from '@react-native-community/datetimepicker';
