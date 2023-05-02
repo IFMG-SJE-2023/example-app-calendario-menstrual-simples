@@ -12,7 +12,12 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 const Home = ({ currentUser }) => {
     //marcadores
-    const heartDates = ['2023-02-14', '2023-03-08', '2023-04-22'];
+    const [heartDates, setheartDates] = useState(['2023-02-14', '2023-05-10', '2023-03-08', '2023-04-22']);
+    //const heartDates = ['2023-02-14', '2023-05-10', '2023-03-08', '2023-04-22'];
+    const menstruacaoDates = ['2023-05-02', '2023-05-03'];
+    const ovulacaoDates = ['2023-05-14', '2023-06-13'];
+
+
     //Data
     const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -28,10 +33,31 @@ const Home = ({ currentUser }) => {
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
-        setDate(currentDate);
+        setDate(currentDate);   //  de onde é esta funcao
         setShowDatePicker(false);
     };
-    async function addRelacaoSexual(id_usuario, data) {
+
+    // funcao secundaria do botao CONFIRMAR do modal de relacoes
+    const calendarioAddDiaRelacao = (novoDia) => {
+        
+        // FUNCAO PARA adidionar no calendario central do front end a relacao, 
+        // sem precisar de um refresh do DB
+        // falta uma funcao 
+        // VER   const [heartDates, setheartDates] = useState([]);
+        //    AO SER ADICIONADO  deu erro
+        console.log(novoDia);
+        
+        setheartDates(oldArray => [...oldArray, novoDia ]);
+    };
+
+    // funcao primeira botao CONFIRMAR do modal de relacoes
+    async function addRelacaoSexual(id_usuario, dataDia) {
+        
+        // porem ao pressionar um dia, a var  RelacaoSexual que é atribuida
+        // onDayPress={(day) => setRelacaoSexual(day.dateString)}
+        // 
+        console.log("addRelacaoSexual" + dataDia);
+        // console.log(RelacaoSexual);
         try {
             const response = await fetch(config.urlRootNode + 'add-relacao-sexual', {
                 method: 'POST',
@@ -39,16 +65,53 @@ const Home = ({ currentUser }) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    id_usuario,
-                    data
+                    id_usuarioRelacao: id_usuario,
+                    dataRelacao: dataDia
                 })
             });
             const data = await response.json();
-            return data;
+            if (response.ok) {
+                console.log("relacao gravada");
+            } else {
+                console.log(response.json());
+            }
+            // return data;
+        
         } catch (error) {
             console.error(error);
         }
     }
+
+   // funcao para caregamento inicial de relacoes
+   async function getRelacaoSexual(id_usuario) {
+        //  precisa de uma funcao para ler cada resultado e preencher no calendario
+        // usando 
+        console.log("getRelacaoSexual");
+        // console.log(RelacaoSexual);
+        try {
+            const response = await fetch(config.urlRootNode + 'get-relacao-sexual', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id_usuarioRelacao: id_usuario
+                })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                console.log("get relacoes baixadas:  ");
+            } else {
+                console.log(response.json());
+            }
+            // return data;
+        
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    //getRelacaoSexual(currentUser.id );
 
     return (
         <SafeAreaView style={[styles.container]}>
@@ -63,6 +126,12 @@ const Home = ({ currentUser }) => {
                                 {/* Check if the current date is in the list of heart dates */}
                                 {heartDates.includes(date.dateString) && (
                                     <Icon name="heart" size={26} color="#f00" style={{ position: 'absolute' }} />
+                                )}
+                                {ovulacaoDates.includes(date.dateString) && (
+                                    <Icon name="heart" size={26} color="#00f" style={{ position: 'absolute' }} />
+                                )}
+                                {menstruacaoDates.includes(date.dateString) && (
+                                    <Icon name="circle" size={26} color="#f00" style={{ position: 'absolute' }} />
                                 )}
                                 <Text style={{ textAlign: 'center', color: state === 'disabled' ? 'gray' : 'black' }}>
                                     {date.day}
@@ -114,7 +183,11 @@ const Home = ({ currentUser }) => {
                                     />
                                 </View>
                                 <TouchableOpacity style={styles.button2}
-                                    onPress={() => addRelacaoSexual(currentUser.id,selectedDate)}>
+                                    onPress={() => {
+                                        addRelacaoSexual(currentUser.id,relacaoSexual);
+                                        calendarioAddDiaRelacao(relacaoSexual);
+                                    }
+                                    }>
                                     <Text style={styles.buttonText}>Confirmar</Text>
                                 </TouchableOpacity>
                             </View>
