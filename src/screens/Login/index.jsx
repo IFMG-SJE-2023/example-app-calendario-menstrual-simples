@@ -44,6 +44,7 @@ export default function Login() {
         console.log(user);
         store.dispatch(setCurrentUser(user));
         navigation.navigate('Cadastro');
+        changeForm();
       } else {
         // exibir mensagem de erro
       }

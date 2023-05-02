@@ -15,8 +15,9 @@ const App = ({ currentUser }) => {
   const [step, setStep] = useState(0);
   const [respostaSelecionada, setRespostaSelecionada] = useState(null);
   const [intervalo, setIntervalo] = useState('');
-
-  async function addCicloMenstrual(id_usuario, dataInicio, dataFim, intervalo) {
+  const dtInicio = moment(ultMenstruacao);
+  const dtFim = moment(ultMenstruacao).add(4, 'days');
+  async function addCicloMenstrual() {
     try {
       const response = await fetch(config.urlRootNode + 'add-ciclo-menstrual', {
         method: 'POST',
@@ -24,14 +25,16 @@ const App = ({ currentUser }) => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          id_usuario,
-          dataInicio,
-          dataFim, 
-          intervalo
+          id_usuario: currentUser.id,
+          dataInicio:  dtInicio, 
+          dataFim:  dtFim, 
+          intervalo1: intervalo,
         })
       });
       const data = await response.json();
-      return data;
+      if (data) {
+        navigation.navigate('Login');
+      }
     } catch (error) {
       console.error(error);
     }
@@ -40,9 +43,7 @@ const App = ({ currentUser }) => {
   const handlePressBotao = (resposta) => {
     if (resposta == 'Não') {
       setIntervalo('28');
-      const dtInicio = moment(ultMenstruacao).format('YYYY-MM-DD');
-      const dtFim = moment(ultMenstruacao).add(4, 'days').format('YYYY-MM-DD');
-      addCicloMenstrual(currentUser.id, dtInicio, dtFim, intervalo);
+      addCicloMenstrual();
     } else {
       changeForm();
     }
@@ -67,7 +68,7 @@ const App = ({ currentUser }) => {
   const handleConfirmarPress = (valor) => {
     if (valor) {
       setIntervalo(valor);
-      addCicloMenstrual(currentUser.id, ultMenstruacao, ultMenstruacao+4, intervalo);
+      addCicloMenstrual();
     }
   }
   return (

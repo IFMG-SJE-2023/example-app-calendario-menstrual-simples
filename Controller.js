@@ -72,10 +72,11 @@ app.post('/login', async (req, res) => {
 });
 app.post('/add-relacao-sexual', async (req, res) => {
     try {
-        const { id_usuario, data } = req.body;
         const relacaoSexual = await model.RelacaoSexual.create({
-            id_usuario,
-            data
+          'id_usuario': req.body.id_usuario,
+          'data': req.body.data1,
+          'createdAt': new Date(),
+          'updatedAt': new Date()
         });
         res.status(201).json(relacaoSexual);
     } catch (error) {
@@ -85,12 +86,13 @@ app.post('/add-relacao-sexual', async (req, res) => {
 });
 app.post('/add-ciclo-menstrual', async (req, res) => {
   try {
-      const { id_usuario, dataInicio, dataFim, intervalo} = req.body;
       const cicloMenstrual = await model.Ciclo_Menstrual.create({
-          id_usuario,
-          dataInicio,
-          dataFim,
-          intervalo
+          id_usuario: req.body.id_usuario,
+          data_inicio: req.body.dataInicio,
+          data_final: req.body.dataFim,
+          intervalo: req.body.intervalo1,
+          'createdAt': new Date(),
+          'updatedAt': new Date()
       });
       res.status(201).json(cicloMenstrual);
   } catch (error) {

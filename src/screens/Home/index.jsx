@@ -26,21 +26,18 @@ const Home = ({ currentUser }) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [intervalo, setIntervalo] = useState();
 
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate;
-        setDate(currentDate);
-        setShowDatePicker(false);
-    };
-    async function addRelacaoSexual(id_usuario, data) {
+
+    async function addRelacaoSexual() {
         try {
+            console.log(currentUser.id,relacaoSexual)
             const response = await fetch(config.urlRootNode + 'add-relacao-sexual', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    id_usuario,
-                    data
+                    id_usuario: currentUser.id,
+                    data1: relacaoSexual
                 })
             });
             const data = await response.json();
@@ -114,7 +111,7 @@ const Home = ({ currentUser }) => {
                                     />
                                 </View>
                                 <TouchableOpacity style={styles.button2}
-                                    onPress={() => addRelacaoSexual(currentUser.id,selectedDate)}>
+                                    onPress={addRelacaoSexual}>
                                     <Text style={styles.buttonText}>Confirmar</Text>
                                 </TouchableOpacity>
                             </View>
