@@ -3,19 +3,47 @@ import { useNavigation } from '@react-navigation/native';
 import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, KeyboardAvoidingView, ViewComponent, TextInput, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Fundo from '../../../assets/fundo.png';
+import { connect } from 'react-redux';
+import { setCurrentUser } from '../../../store';
+import store from '../../../store';
+import moment from 'moment';
+import config from '../../../config/config.json';
 
-
-export default function App() {
+const App = ({ currentUser }) => {
   const navigation = useNavigation();
   const [ultMenstruacao, setultMenstruacao] = useState('');
   const [step, setStep] = useState(0);
   const [respostaSelecionada, setRespostaSelecionada] = useState(null);
   const [intervalo, setIntervalo] = useState('');
+  const dtInicio = moment(ultMenstruacao);
+  const dtFim = moment(ultMenstruacao).add(4, 'days');
+  async function addCicloMenstrual() {
+    try {
+      const response = await fetch(config.urlRootNode + 'add-ciclo-menstrual', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id_usuario: currentUser.id,
+          dataInicio:  dtInicio, 
+          dataFim:  dtFim, 
+          intervalo1: intervalo,
+        })
+      });
+      const data = await response.json();
+      if (data) {
+        navigation.navigate('Login');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const handlePressBotao = (resposta) => {
     if (resposta == 'Não') {
       setIntervalo('28');
-      navigation.navigate('Login');
+      addCicloMenstrual();
     } else {
       changeForm();
     }
@@ -40,7 +68,7 @@ export default function App() {
   const handleConfirmarPress = (valor) => {
     if (valor) {
       setIntervalo(valor);
-      navigation.navigate('Login');
+      addCicloMenstrual();
     }
   }
   return (
@@ -120,7 +148,11 @@ export default function App() {
     </ImageBackground >
   );
 }
+const mapStateToProps = (state) => ({
+  currentUser: state.currentUser
+});
 
+export default connect(mapStateToProps)(App);
 
 const styles = StyleSheet.create({
   container: {

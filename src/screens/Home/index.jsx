@@ -5,9 +5,9 @@ import { Calendar } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FAB } from 'react-native-elements';
 import { StatusBar } from 'react-native';
-import config from '../../../config/config.json';
 import { setCurrentUser } from '../../../store';
 import store from '../../../store';
+import config from '../../../config/config.json';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const Home = ({ currentUser }) => {
@@ -30,6 +30,7 @@ const Home = ({ currentUser }) => {
     const [relacaoSexual, setRelacaoSexual] = useState('');
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [intervalo, setIntervalo] = useState();
+
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
@@ -58,7 +59,9 @@ const Home = ({ currentUser }) => {
         // 
         console.log("addRelacaoSexual" + dataDia);
         // console.log(RelacaoSexual);
+
         try {
+            console.log(currentUser.id,relacaoSexual)
             const response = await fetch(config.urlRootNode + 'add-relacao-sexual', {
                 method: 'POST',
                 headers: {
@@ -183,11 +186,13 @@ const Home = ({ currentUser }) => {
                                     />
                                 </View>
                                 <TouchableOpacity style={styles.button2}
+
                                     onPress={() => {
                                         addRelacaoSexual(currentUser.id,relacaoSexual);
                                         calendarioAddDiaRelacao(relacaoSexual);
                                     }
                                     }>
+
                                     <Text style={styles.buttonText}>Confirmar</Text>
                                 </TouchableOpacity>
                             </View>
