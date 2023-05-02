@@ -1,29 +1,96 @@
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, ImageBackground, Alert, TouchableOpacity, KeyboardAvoidingView, Image, Platform } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ImageBackground, Alert, TouchableOpacity, KeyboardAvoidingView, Image } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
 import Calendario from '../../../assets/calendario.png'
 import Fundo from '../../../assets/fundo.png'
-import Usuarios from '../../services/sqlite/Usuarios';
 import { StatusBar } from 'react-native';
+import config from '../../../config/config.json';
+import { setCurrentUser } from '../../../store';
+import store from '../../../store';
 
 export default function Login() {
   const navigation = useNavigation();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [step, setStep] = useState(0);
+
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [repeatpassword, setRepeatPassword] = useState('');
 
-  const usuario = {
-    nome: name,
-    email: email,
-    data_nascimento: format(new Date(selectedDate), 'dd/MM/yyyy'),
-    senha: password,
-  };
+  async function registerUser() {
+    try {
+      let request = await fetch(config.urlRootNode + 'create', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          nomeUser: name,
+          data_nascimentoUser: selectedDate,
+          emailUser: email,
+          passwordUser: password
+        })
+      });
+  
+      let response = await request.json();
+  
+      if (response.success) {
+        const user = response.user;
+        console.log(user);
+        store.dispatch(setCurrentUser(user));
+        navigation.navigate('Cadastro');
+        changeForm();
+      } else {
+        // exibir mensagem de erro
+      }
+    } catch (error) {
+      console.error(error);
+      // exibir mensagem de erro
+    }
+  }
+  
+
+  async function loginUser() {
+    try {
+      const response = await fetch(config.urlRootNode + 'login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          emailUser: email,
+          passwordUser: password
+        })
+      });
+  
+      const data = response.ok ? await response.json() : { message: 'Erro ao fazer login' };
+  
+      if (response.ok) {
+        const user = {
+          id : data.id,
+          name: data.name,
+          email: data.email
+        };
+        console.log(user);
+        store.dispatch(setCurrentUser(user));
+  
+        // Navegue para a tela principal
+        navigation.navigate('TelaPrincipal');
+      } else {
+        // Login falhou, exiba uma mensagem de erro para o usuário
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      // Lide com o erro aqui, como exibir uma mensagem de erro para o usuário
+    }
+  }
+  
 
 
   const onChange = (event, selectedDate) => {
@@ -33,25 +100,15 @@ export default function Login() {
   };
 
   const handleSubmit = (email, password) => {
-    /*     if (email === '') {
-          Alert.alert('Informe seu email');
-          return;
-        }
-        if (password === '') {
-          Alert.alert('Informe sua senha');
-          return;
-        }
-        //precisa mandar os dados para o objeto no singIN
-        
-        Usuarios.findByLoginAndPassword(email, password)
-          .then((result) => {
-            navigation.navigate('TelaPrincipal');
-          })
-          .catch((error) => {
-            Alert.alert('Os dados digitados não correspondem a nenhum usuário.');
-            //console.error(error);
-          });
-       */
+    if (email === '') {
+      Alert.alert('Informe seu email');
+      return;
+    }
+    if (password === '') {
+      Alert.alert('Informe sua senha');
+      return;
+    }
+
     navigation.navigate('TelaPrincipal');
   };
   function changeForm() {
@@ -63,7 +120,7 @@ export default function Login() {
   }
 
   function validateForm() {
-    /* if (name === '') {
+    if (name === '') {
       Alert.alert('Informe seu nome');
       return;
     }
@@ -83,16 +140,8 @@ export default function Login() {
       Alert.alert('As senhas nao conferem');
       return;
     }
-    Usuarios.findByEmailandName(email, name)
-      .then((id) => Alert.alert('Usuario Existente.'))
-      .catch((error) => {
-        Usuarios.create(usuario)
-          .then((id) => console.log("Objeto inserido com sucesso! ID: ", id))
-          .catch((error) => console.error(error));
-        navigation.navigate('Cadastro');
-        changeForm();
-      }); */
-    
+
+
   }
 
   return (
@@ -138,7 +187,7 @@ export default function Login() {
             onChangeText={setPassword}
           />
 
-          <TouchableOpacity style={styles.button} onPress={() => handleSubmit(email, password)}>
+          <TouchableOpacity style={styles.button} onPress={loginUser}>
             <Text style={styles.buttonText}>Entrar</Text>
           </TouchableOpacity>
 
@@ -210,7 +259,7 @@ export default function Login() {
 
 
           />
-          <TouchableOpacity style={styles.button} onPress={validateForm}>
+          <TouchableOpacity style={styles.button} onPress={registerUser}>
             <Text style={styles.buttonText}>Cadastrar
             </Text>
           </TouchableOpacity>
