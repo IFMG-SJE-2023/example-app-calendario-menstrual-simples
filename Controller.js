@@ -101,6 +101,54 @@ app.post('/add-ciclo-menstrual', async (req, res) => {
   }
 });
 
+app.post('/get-relacao-sexual', async (req, res) => {
+  try {
+      const { id_usuarioRelacao } = req.body;
+      const relacaoSexual = await model.RelacaoSexual.findAll({
+          where: {
+              id_usuario: id_usuarioRelacao
+          },
+          order: [['data', 'DESC']]
+      });
+      if (relacaoSexual) {
+          console.log(relacaoSexual);
+          res.send(JSON.stringify( relacaoSexual
+          ));
+      } else {
+          res.status(401).send(JSON.stringify({ message: 'erro ao buscar todas relacoes' }));
+      }
+  } catch (error) {
+      console.error(error);
+      res.status(500).send(JSON.stringify({ message: 'Ocorreu um erro ao buscar todas relacoes' }));
+  }
+});
+
+
+
+
+// busca ultima menstruacao
+app.post('/get-ultima-menstruacao', async (req, res) => {
+  try {
+      const { id_usuarioCiclo } = req.body;
+      const relacaoCiclo = await model.Ciclo_Menstrual.findAll({
+          where: {
+              id_usuario: id_usuarioCiclo
+          },
+          order: [['data', 'DESC']],
+          limit: '1'
+      });
+      if (Ciclo_Menstrual) {
+          console.log(Ciclo_Menstrual);
+          res.send(JSON.stringify( Ciclo_Menstrual
+          ));
+      } else {
+          res.status(401).send(JSON.stringify({ message: 'erro ao buscar ultimo menstru' }));
+      }
+  } catch (error) {
+      console.error(error);
+      res.status(500).send(JSON.stringify({ message: 'Ocorreu um erro ao buscar mentruacao' }));
+  }
+});
 //Start server
 let port = process.env.PORT || 3000;
 app.listen(port, (req, res) => {
