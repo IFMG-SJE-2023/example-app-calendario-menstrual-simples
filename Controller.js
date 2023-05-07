@@ -44,11 +44,16 @@ app.post('/create', async (req, res) => {
         message: 'Erro interno do servidor'
       });
     }
-  });
+});
+
+
+
+
+
 app.post('/login', async (req, res) => {
     try {
         const { emailUser, passwordUser } = req.body;
-        const user = await model.User.findOne({
+        let user = await model.User.findOne({
             where: {
                 email: emailUser,
                 password: passwordUser
@@ -76,8 +81,8 @@ app.post('/add-relacao-sexual', async (req, res) => {
 
         const { id_usuarioRelacao, dataRelacao } = req.body;
         const relacaoSexual = await model.RelacaoSexual.create({
-            'id_usuario': req.body.id_usuarioRelacao,
-            'data': req.body.dataRelacao,
+            'id_usuario': id_usuarioRelacao,
+            'data': dataRelacao,
             'createdAt': new Date().toISOString(),
             'updatedAt': new Date().toDateString()
 
@@ -90,11 +95,12 @@ app.post('/add-relacao-sexual', async (req, res) => {
 });
 app.post('/add-ciclo-menstrual', async (req, res) => {
   try {
+    const { id_usuarioCiclo, dataInicio , dataFim, intervalo1} = req.body;
       const cicloMenstrual = await model.Ciclo_Menstrual.create({
-          id_usuario: req.body.id_usuario,
-          data_inicio: req.body.dataInicio,
-          data_final: req.body.dataFim,
-          intervalo: req.body.intervalo1,
+          'id_usuario': id_usuarioCiclo,
+          'data_inicio': dataInicio,
+          'data_final': dataFim,
+          'intervalo': intervalo1,
           'createdAt': new Date(),
           'updatedAt': new Date()
       });
@@ -104,6 +110,7 @@ app.post('/add-ciclo-menstrual', async (req, res) => {
       res.status(500).json({ message: 'Erro ao adicionar ciclo menstrual' });
   }
 });
+
 
 // busca todas  dias  de relacao sexual
 app.post('/get-relacao-sexual', async (req, res) => {
@@ -117,8 +124,7 @@ app.post('/get-relacao-sexual', async (req, res) => {
         });
         if (relacaoSexual) {
             console.log(relacaoSexual);
-            res.send(JSON.stringify( relacaoSexual
-            ));
+            res.send(JSON.stringify( relacaoSexual));
         } else {
             res.status(401).send(JSON.stringify({ message: 'erro ao buscar todas relacoes' }));
         }
@@ -130,15 +136,30 @@ app.post('/get-relacao-sexual', async (req, res) => {
 
 // busca ultima menstruacao
 app.post('/get-ultima-menstruacao', async (req, res) => {
-    const { id_usuarioCiclo } = req.body;
-    const ultimaMenstruacao = await model.Ciclo_Menstrual.findOne({
-      where: {
-        id_usuarioCiclo: id_usuarioCiclo
-      },
-      order: [['dataMenstruacao', 'DESC']]
-    });
-    res.json(ultimaMenstruacao);
-  });
+
+    try {
+        const { id_usuarioCiclo } = req.body;
+        const Ciclo_Menstrual = await model.Ciclo_Menstrual.findAll({
+            where: {
+                id_usuario: id_usuarioCiclo
+            },
+            order: [['data_inicio', 'DESC']],
+            limit: 1
+        });
+        if (Ciclo_Menstrual) {
+            console.log(Ciclo_Menstrual);
+            res.send(JSON.stringify( Ciclo_Menstrual));
+        } else {
+            res.status(401).send(JSON.stringify({ message: 'erro ao buscar ultimo menstru' }));
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(JSON.stringify({ message: 'Ocorreu um erro ao buscar mentruacao' }));
+    }
+});
+
+
+
 
 //Start server
 let port = process.env.PORT || 3000;
