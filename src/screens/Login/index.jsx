@@ -78,8 +78,7 @@ export default function Login() {
         };
         console.log(user);
         store.dispatch(setCurrentUser(user));
-  
-        // Navegue para a tela principal
+
         navigation.navigate('TelaPrincipal');
       } else {
         // Login falhou, exiba uma mensagem de erro para o usuário
