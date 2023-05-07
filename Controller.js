@@ -130,28 +130,15 @@ app.post('/get-relacao-sexual', async (req, res) => {
 
 // busca ultima menstruacao
 app.post('/get-ultima-menstruacao', async (req, res) => {
-    try {
-        const { id_usuarioCiclo } = req.body;
-        const relacaoCiclo = await model.Ciclo_Menstrual.findAll({
-            where: {
-                id_usuario: id_usuarioCiclo
-            },
-            order: [['data', 'DESC']],
-            limit: '1'
-        });
-        if (Ciclo_Menstrual) {
-            console.log(Ciclo_Menstrual);
-            res.send(JSON.stringify( Ciclo_Menstrual
-            ));
-        } else {
-            res.status(401).send(JSON.stringify({ message: 'erro ao buscar ultimo menstru' }));
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(500).send(JSON.stringify({ message: 'Ocorreu um erro ao buscar mentruacao' }));
-    }
-});
-
+    const { id_usuarioCiclo } = req.body;
+    const ultimaMenstruacao = await model.Ciclo_Menstrual.findOne({
+      where: {
+        id_usuarioCiclo: id_usuarioCiclo
+      },
+      order: [['dataMenstruacao', 'DESC']]
+    });
+    res.json(ultimaMenstruacao);
+  });
 
 //Start server
 let port = process.env.PORT || 3000;
