@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
+import config from '../../../config/config.json';
 import store from '../../../store';
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import { FontAwesome5 } from 'react-native-vector-icons';
 import { View, Text, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import { StatusBar } from 'react-native';
@@ -14,6 +15,31 @@ const TelaPrincipal = ({ currentUser }) => {
   const dias = '20';
   const [iconName, setIconName] = useState('bell');
 
+  const [ultimaMenstruacao, setUltimaMenstruacao] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch(config.urlRootNode + 'get-ultima-menstruacao', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id_usuarioCiclo: currentUser.id
+        })
+      });
+      const data = await response.json();
+      setUltimaMenstruacao(data ? data.dataMenstruacao : null);
+    }
+    fetchData();
+  }, [currentUser]);
+
+  /* function diasParaMenstruacao(dataMenstruacao) {
+    const hoje = moment();
+    const proximaMenstruacao = moment(dataMenstruacao);
+    const diferenca = proximaMenstruacao.diff(hoje, 'days');
+    return diferenca;
+  } */
   const handlePress = () => {
     if (iconName === 'bell') {
       setIconName('check');
@@ -34,14 +60,14 @@ const TelaPrincipal = ({ currentUser }) => {
           style={styles.bellIcon}
           onPress={handlePress} />
       </View>
-      
+
 
       <ScrollView>
         <Text style={styles.mensagem}>{
           "Menstruação em"
         }</Text>
         <Text style={styles.date}>{
-          dias
+          ultimaMenstruacao ? moment(ultimaMenstruacao).format('DD/MM/YYYY') : '-'
         }</Text>
         <Text style={styles.mensagem}>{
           "Dias"

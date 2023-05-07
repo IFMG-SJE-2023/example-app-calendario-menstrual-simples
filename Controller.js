@@ -75,9 +75,6 @@ app.post('/login', async (req, res) => {
         res.status(500).send(JSON.stringify({ message: 'Ocorreu um erro ao fazer login!' }));
     }
 });
-
-
-
 // grava  um dia de relacao sexual
 app.post('/add-relacao-sexual', async (req, res) => {
     try {
@@ -115,7 +112,6 @@ app.post('/add-ciclo-menstrual', async (req, res) => {
 });
 
 
-
 // busca todas  dias  de relacao sexual
 app.post('/get-relacao-sexual', async (req, res) => {
     try {
@@ -138,11 +134,9 @@ app.post('/get-relacao-sexual', async (req, res) => {
     }
 });
 
-
-
-
 // busca ultima menstruacao
 app.post('/get-ultima-menstruacao', async (req, res) => {
+
     try {
         const { id_usuarioCiclo } = req.body;
         const Ciclo_Menstrual = await model.Ciclo_Menstrual.findAll({
@@ -163,6 +157,7 @@ app.post('/get-ultima-menstruacao', async (req, res) => {
         res.status(500).send(JSON.stringify({ message: 'Ocorreu um erro ao buscar mentruacao' }));
     }
 });
+
 
 
 

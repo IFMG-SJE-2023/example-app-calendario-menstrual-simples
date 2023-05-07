@@ -1,8 +1,10 @@
 {
   "development": {
     "username": "root",
+
     "password": "12345",
     "database": "appcalendar3",
+
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
@@ -20,7 +22,9 @@
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
-  "urlRootNode": "http://192.168.198.199:3000/",
+
+  "urlRootNode": "http://http://192.168.1.100:3000/",
   "urlRootNodebackup": "http://192.168.198.199:3000/"
+
 }
 
