@@ -3,20 +3,24 @@ Este é um aplicativo de Calendário Menstrual, desenvolvido como projeto da dis
 
 ![Progresso](https://img.shields.io/badge/progresso-35%25-brightgreen)
 
+
+![Tela do calendário](https://uploaddeimagens.com.br/images/004/456/490/original/screenshot.jpg?1683449561)  
+
 ## Funcionalidades
 O aplicativo permite:
 1. Registro de datas de início e fim da menstruação
-2. Previsão da próxima menstruação
-3. Registro de informações sobre o ciclo menstrual
-4. Visualização do histórico de ciclos menstruais
-5. Edição e exclusão de ciclos menstruais registrados
-6. Notificações sobre datas de início e fim da menstruação e previsão da próxima menstruação
+2. Registro de datas de relações sexuais
+3. Previsão da próxima menstruação
+4. Registro de informações sobre o ciclo menstrual
+5. Visualização do dia de ovulação (14º dia) da última menstruação
+
 
 ## Tecnologias utilizadas
 
 - React Native
-- SQLite
 - Expo
+- Sequelize
+- Mysql
 
 ## Como executar o projeto
 
@@ -40,6 +44,28 @@ npm install
 ```bash
 npx expo start
 ```
-6. Escaneie o código QR exibido no terminal com o aplicativo Expo.
 
-7. Aguarde a compilação do aplicativo e a inicialização no seu dispositivo móvel.
+6. Crie um bando de dados chamado appcalendar no seu mysql server, com o arquivo appcalendar3.sql
+
+7. configure o arquivo config.json na seçao  development com os dados do seu mysql server local
+```bash
+  "development": {
+    "username": "root",
+    "password": "12345",
+    "database": "appcalendar3",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+```
+
+8. instale e execute o nodemon na pasta do app com o comando 
+```bash
+npm i nodemon 
+x:\appcalendar> nodemon ./Controller.js 
+```
+
+9. Escaneie o código QR exibido no terminal com o aplicativo Expo.
+
+10. Aguarde a compilação do aplicativo e a inicialização no seu dispositivo móvel.
+
+11. para testar mais facilmente, faça login como fulana@mail.com  senha = 123.

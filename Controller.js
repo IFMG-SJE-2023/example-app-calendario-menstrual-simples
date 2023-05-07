@@ -44,11 +44,16 @@ app.post('/create', async (req, res) => {
         message: 'Erro interno do servidor'
       });
     }
-  });
+});
+
+
+
+
+
 app.post('/login', async (req, res) => {
     try {
         const { emailUser, passwordUser } = req.body;
-        const user = await model.User.findOne({
+        let user = await model.User.findOne({
             where: {
                 email: emailUser,
                 password: passwordUser
@@ -79,8 +84,8 @@ app.post('/add-relacao-sexual', async (req, res) => {
 
         const { id_usuarioRelacao, dataRelacao } = req.body;
         const relacaoSexual = await model.RelacaoSexual.create({
-            'id_usuario': req.body.id_usuarioRelacao,
-            'data': req.body.dataRelacao,
+            'id_usuario': id_usuarioRelacao,
+            'data': dataRelacao,
             'createdAt': new Date().toISOString(),
             'updatedAt': new Date().toDateString()
 
@@ -93,11 +98,12 @@ app.post('/add-relacao-sexual', async (req, res) => {
 });
 app.post('/add-ciclo-menstrual', async (req, res) => {
   try {
+    const { id_usuarioCiclo, dataInicio , dataFim, intervalo1} = req.body;
       const cicloMenstrual = await model.Ciclo_Menstrual.create({
-          id_usuario: req.body.id_usuario,
-          data_inicio: req.body.dataInicio,
-          data_final: req.body.dataFim,
-          intervalo: req.body.intervalo1,
+          'id_usuario': id_usuarioCiclo,
+          'data_inicio': dataInicio,
+          'data_final': dataFim,
+          'intervalo': intervalo1,
           'createdAt': new Date(),
           'updatedAt': new Date()
       });
@@ -122,8 +128,7 @@ app.post('/get-relacao-sexual', async (req, res) => {
         });
         if (relacaoSexual) {
             console.log(relacaoSexual);
-            res.send(JSON.stringify( relacaoSexual
-            ));
+            res.send(JSON.stringify( relacaoSexual));
         } else {
             res.status(401).send(JSON.stringify({ message: 'erro ao buscar todas relacoes' }));
         }
@@ -140,7 +145,7 @@ app.post('/get-relacao-sexual', async (req, res) => {
 app.post('/get-ultima-menstruacao', async (req, res) => {
     try {
         const { id_usuarioCiclo } = req.body;
-        const relacaoCiclo = await model.Ciclo_Menstrual.findAll({
+        const Ciclo_Menstrual = await model.Ciclo_Menstrual.findAll({
             where: {
                 id_usuario: id_usuarioCiclo
             },

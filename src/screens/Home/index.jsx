@@ -70,14 +70,14 @@ const Home = ({ currentUser }) => {
     // funcao nao esta sendo usada ainda
     // const onChange = (event, selectedDate) => {
     const handlePressMenstruacao = (event) => {
-        const currentDate = selectedDate;
+        const dtInicio = selectedDate;
         //setDate(currentDate);   //  de onde é esta funcao setDate ?
         //setSelectedDate(currentDate);   
-        const dtInicio = currentDate.dateString;
-        const dtFim = moment(currentDate).add(4, 'days').toString;
+        //const dtInicio = currentDate.dateString;
+        const dtFim = moment(dtInicio).add(4, 'days').toString;
         
-        setShowDatePicker(false);
         addCicloMenstrual(currentUser.id,dtInicio);
+        setShowDatePicker(false);
 
     };
 
@@ -87,8 +87,10 @@ const Home = ({ currentUser }) => {
         // grava no DB a nova relacao
         addRelacaoSexual(currentUser.id,relacaoSexual);
 
+        getRelacaoSexual(currentUser.id);
+        
         // atualiza mapa visual
-        calendarioAddDiaRelacao(relacaoSexual);
+        //calendarioAddDiaRelacao(relacaoSexual);
     }
 
     // funcao secundaria do botao CONFIRMAR do modal de relacoes
@@ -141,7 +143,7 @@ const Home = ({ currentUser }) => {
         console.log("getRelacaoSexual INICIO ");
         // console.log(RelacaoSexual);
         try {
-            let request  = await fetch(config.urlRootNode + 'get-relacao-sexual', {
+            let response  = await fetch(config.urlRootNode + 'get-relacao-sexual', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -152,15 +154,24 @@ const Home = ({ currentUser }) => {
                 })
             });
 
-            let response = await request.json();
-            if (response.success) {
-                console.log("get relacoes baixadas:  ");
-                console.log(response);
-                console.log(response.data);
+            const resdata = response.ok ? await response.json() : { message: 'Erro getRelacaoSexual('+ id_usuario + ')' };
+
+            if (response.ok) {
+                console.log("======== getrelacoes() baixadas: ======== ");
+                console.log(" ======== resdata =========== ");
+                console.log(resdata);
+                console.log("  ======== resdata.data  ======== ");
+                // console.log(resdata.data); // undefined
+                //console.log(resdata[0]); // certo
+                
                 // atualizar array hearts
-                response.foreach((RelacaoSexual) =>{
-                      setheartDates(oldArray => [...oldArray, RelacaoSexual.dataValues.data ]);
-                });
+                for (var i = 0; i < resdata.length; i++){
+                    // resdata[i].data;
+                    console.log("  ==== for () ==== ");
+                    console.log(resdata[i]);
+                    setheartDates(oldArray => [...oldArray, resdata[i].data]);
+                }
+   
             } else {
                 console.log("getRelacaoSexual  response.success  FALSE");
                 console.log(response.json());
@@ -209,7 +220,7 @@ const Home = ({ currentUser }) => {
     //  puxa do DB  menstrucao mais recente
     async function getUltimaMenstruacao(id_usuario) {
         try {
-            let request = await fetch(config.urlRootNode + 'get-ultima-menstruacao', {
+            let response = await fetch(config.urlRootNode + 'get-ultima-menstruacao', {
                 method: 'POST',
                 headers: {
                 'Accept': 'application/json',
@@ -219,10 +230,10 @@ const Home = ({ currentUser }) => {
                     id_usuarioCiclo: id_usuario,
                 })
             });
+            const resdata = response.ok ? await response.json() : { message: 'Erro getRelacaoSexual('+ id_usuario + ')' };
+
       
-            let response = await request.json();
-      
-            if (response.success) {
+            if (response.ok) {
                 let dataInicio;
                 let dataFim;
                 let dateArray = [];
@@ -234,10 +245,14 @@ const Home = ({ currentUser }) => {
                 console.log(" === console.log(response.data); === ");
                 console.log(response.data);
                 // só tem 1 resultado
-                response.foreach((Ciclo_Menstrual) =>{
-                    dataInicio = Ciclo_Menstrual.dataValues.data_inicio;
-                    dataFim = Ciclo_Menstrual.dataValues.data_final;
-                });
+                for (var i = 0; i < resdata.length; i++){
+                    // resdata[i].data;
+                    console.log("  ==== for () ==== ");
+                    console.log(resdata[i]);
+
+                    dataInicio = resdata[i].data_inicio;
+                    dataFim = resdata[i].data_final;
+                }
 
                 // preencher datas entre data_inicio e data_final
                 var data1 = moment(dataInicio);
