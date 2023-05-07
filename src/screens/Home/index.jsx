@@ -2,69 +2,118 @@ import { connect } from 'react-redux';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, SafeAreaView, Alert, TextInput } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Feather'; //  alterado de FontAwesome
 import { FAB } from 'react-native-elements';
 import { StatusBar } from 'react-native';
 import { setCurrentUser } from '../../../store';
 import store from '../../../store';
 import config from '../../../config/config.json';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
+
 
 const Home = ({ currentUser }) => {
-    //marcadores
-    const [heartDates, setheartDates] = useState(['2023-02-14', '2023-05-10', '2023-03-08', '2023-04-22']);
+    
+    //marcadores do mapa principal
+
+    //  dias de relacao sexual
+    const [heartDates, setheartDates] = useState([]);
     //const heartDates = ['2023-02-14', '2023-05-10', '2023-03-08', '2023-04-22'];
-    const menstruacaoDates = ['2023-05-02', '2023-05-03'];
-    const ovulacaoDates = ['2023-05-14', '2023-06-13'];
+    useEffect(()=>{
+        if(heartDates?.length === 0){
+            getRelacaoSexual(currentUser.id ); // puxa do DB
+        }
+    },[heartDates]);
 
 
-    //Data
-    const [showDatePicker, setShowDatePicker] = useState(false);
+    // dias menstruacao
+    //const menstruacaoDates = ['2023-05-02', '2023-05-03'];
+    const [menstruacaoDates, setMenstruacaoDates ] = useState([]);
+    useEffect(()=>{
+        if(menstruacaoDates?.length === 0){
+            getUltimaMenstruacao(currentUser.id);// puxa do DB
+        }
+    },[menstruacaoDates]);
 
-    //Modal
+    // dia de ovulacao
+    // const ovulacaoDates = ['2023-05-14', '2023-06-13'];
+    // calculado no APP com base na ultima dia1 da menstruacao
+    const [ovulacaoDates, setOvulacaoDates ] = useState([]);
+
+
+    // modais
+
+    //Modal Add Relacao
     const [modal1Visible, setModal1Visible] = useState(false);
+    //Modal Add menstruacao
     const [modal2Visible, setModal2Visible] = useState(false);
+    // botoes flutuantes de add relacao e menstruacao
     const [isFabGroupVisible, setIsFabGroupVisible] = useState(false);
 
-    // Var
+    // relacao
+
+    // var da data pressionada no modal add relacao
+    //  ja no formato date string
+    //  setRelacaoSexual ( day.dateString  )
     const [relacaoSexual, setRelacaoSexual] = useState('');
+    
+    // menstruacao
+
+    //escolha de Data da ultima mensatruacao
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    // Var de data da ultima menstruacao selecionada no modal
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [intervalo, setIntervalo] = useState();
 
 
-    const onChange = (event, selectedDate) => {
+    // para lidar com escolha da menstruacao
+    // funcao nao esta sendo usada ainda
+    // const onChange = (event, selectedDate) => {
+    const handlePressMenstruacao = (event) => {
         const currentDate = selectedDate;
-        setDate(currentDate);   //  de onde é esta funcao
+        //setDate(currentDate);   //  de onde é esta funcao setDate ?
+        //setSelectedDate(currentDate);   
+        const dtInicio = currentDate.dateString;
+        const dtFim = moment(currentDate).add(4, 'days').toString;
+        
         setShowDatePicker(false);
+        addCicloMenstrual(currentUser.id,dtInicio);
+
     };
+
+
+    // quando se clica no botao CONFIRMAR do modal de add relacao
+    function handlePressAddRelacao(){
+        // grava no DB a nova relacao
+        addRelacaoSexual(currentUser.id,relacaoSexual);
+
+        // atualiza mapa visual
+        calendarioAddDiaRelacao(relacaoSexual);
+    }
 
     // funcao secundaria do botao CONFIRMAR do modal de relacoes
     const calendarioAddDiaRelacao = (novoDia) => {
         
         // FUNCAO PARA adidionar no calendario central do front end a relacao, 
         // sem precisar de um refresh do DB
-        // falta uma funcao 
         // VER   const [heartDates, setheartDates] = useState([]);
-        //    AO SER ADICIONADO  deu erro
-        console.log(novoDia);
-        
+        //console.log(novoDia);
         setheartDates(oldArray => [...oldArray, novoDia ]);
     };
 
     // funcao primeira botao CONFIRMAR do modal de relacoes
     async function addRelacaoSexual(id_usuario, dataDia) {
-        
         // porem ao pressionar um dia, a var  RelacaoSexual que é atribuida
         // onDayPress={(day) => setRelacaoSexual(day.dateString)}
-        // 
         console.log("addRelacaoSexual" + dataDia);
         // console.log(RelacaoSexual);
 
         try {
-            console.log(currentUser.id,relacaoSexual)
-            const response = await fetch(config.urlRootNode + 'add-relacao-sexual', {
+            console.log(currentUser.id,dataDia)
+            const request = await fetch(config.urlRootNode + 'add-relacao-sexual', {
                 method: 'POST',
                 headers: {
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -72,8 +121,8 @@ const Home = ({ currentUser }) => {
                     dataRelacao: dataDia
                 })
             });
-            const data = await response.json();
-            if (response.ok) {
+            let response = await request.json();
+            if (response.success) {
                 console.log("relacao gravada");
             } else {
                 console.log(response.json());
@@ -86,24 +135,32 @@ const Home = ({ currentUser }) => {
     }
 
    // funcao para caregamento inicial de relacoes
-   async function getRelacaoSexual(id_usuario) {
+    async function getRelacaoSexual(id_usuario) {
         //  precisa de uma funcao para ler cada resultado e preencher no calendario
         // usando 
         console.log("getRelacaoSexual");
         // console.log(RelacaoSexual);
         try {
-            const response = await fetch(config.urlRootNode + 'get-relacao-sexual', {
+            let request  = await fetch(config.urlRootNode + 'get-relacao-sexual', {
                 method: 'POST',
                 headers: {
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     id_usuarioRelacao: id_usuario
                 })
             });
-            const data = await response.json();
-            if (response.ok) {
+
+            let response = await request.json();
+            if (response.success) {
                 console.log("get relacoes baixadas:  ");
+                console.log(response);
+                console.log(response.data);
+                // atualizar array hearts
+                response.foreach((RelacaoSexual) =>{
+                      setheartDates(oldArray => [...oldArray, RelacaoSexual.dataValues.data ]);
+                });
             } else {
                 console.log(response.json());
             }
@@ -114,7 +171,118 @@ const Home = ({ currentUser }) => {
         }
     }
 
-    //getRelacaoSexual(currentUser.id );
+
+    async function addCicloMenstrual(id_usuario, inicio) {
+        // id_usuarioRelacao
+       
+        const dtFim = moment(inicio).add(4, 'days');
+        try {
+          const response = await fetch(config.urlRootNode + 'add-ciclo-menstrual', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',   
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              id_usuario: id_usuario,
+              dataInicio:  inicio,
+              dataFim:  dtFim,
+              intervalo1: intervalo
+            })
+          });
+          const data = await response.json();
+          if (data) {
+              console.log("menstruacao gravada");
+            
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    
+    async function getUltimaMenstruacao(id_usuario) {
+        try {
+            let request = await fetch(config.urlRootNode + 'get-ultima-menstruacao', {
+                method: 'POST',
+                headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id_usuarioCiclo: id_usuario,
+                })
+            });
+      
+            let response = await request.json();
+      
+            if (response.success) {
+                let dataInicio;
+                let dataFim;
+                let dateArray = [];
+  
+                console.log("get relacoes baixadas:  ");
+                console.log(response);
+                console.log(response.data);
+                // só tem 1 resultado
+                response.foreach((Ciclo_Menstrual) =>{
+                    dataInicio = Ciclo_Menstrual.dataValues.data_inicio;
+                    dataFim = Ciclo_Menstrual.dataValues.data_final;
+                });
+
+                // preencher datas entre data_inicio e data_final
+                var data1 = moment(dataInicio);
+                var data9 = moment(dataFim);
+                while (data1 <= data9) {
+                    setMenstruacaoDates(oldArray => [...oldArray, moment(data1).format('YYYY-MM-DD') ]);
+                    data1 = moment(data1).add(1, 'days');
+                }
+
+                // preencher dia da ovulacao
+                setOvulacaoDates( moment(dataInicio).add(14, 'days').format('YYYY-MM-DD') );
+            
+            } else {
+                // exibir mensagem de erro
+            }
+        } catch (error) {
+          console.error(error);
+          // exibir mensagem de erro
+        }
+    }
+    async function appMen(id_usuario, dataDia) {
+        // porem ao pressionar um dia, a var  RelacaoSexual que é atribuida
+        // onDayPress={(day) => setRelacaoSexual(day.dateString)}
+        console.log("addRelacaoSexual" + dataDia);
+        // console.log(RelacaoSexual);
+
+        try {
+            console.log(currentUser.id,dataDia)
+            const request = await fetch(config.urlRootNode + 'add-ciclo-menstrual', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id_usuarioRelacao: id_usuario,
+                    dataRelacao: dataDia
+                })
+            });
+            let response = await request.json();
+            if (response.success) {
+                console.log("relacao gravada");
+            } else {
+                console.log(response.json());
+            }
+            // return data;
+        
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
+
+
 
     return (
         <SafeAreaView style={[styles.container]}>
@@ -128,13 +296,13 @@ const Home = ({ currentUser }) => {
                             <View style={{ alignItems: 'center' }}>
                                 {/* Check if the current date is in the list of heart dates */}
                                 {heartDates.includes(date.dateString) && (
-                                    <Icon name="heart" size={26} color="#f00" style={{ position: 'absolute' }} />
-                                )}
-                                {ovulacaoDates.includes(date.dateString) && (
                                     <Icon name="heart" size={26} color="#00f" style={{ position: 'absolute' }} />
                                 )}
+                                {ovulacaoDates.includes(date.dateString) && (
+                                    <Icon name="sun" size={26} color="#0f0" style={{ position: 'absolute' }} />
+                                )}
                                 {menstruacaoDates.includes(date.dateString) && (
-                                    <Icon name="circle" size={26} color="#f00" style={{ position: 'absolute' }} />
+                                    <Icon name="droplet" size={26} color="#f00" style={{ position: 'absolute' }} />
                                 )}
                                 <Text style={{ textAlign: 'center', color: state === 'disabled' ? 'gray' : 'black' }}>
                                     {date.day}
@@ -163,7 +331,7 @@ const Home = ({ currentUser }) => {
                         onRequestClose={() =>
                             setModal1Visible(false)
                         }
-                    >
+                     >
                         <View style={styles.centeredView}>
                             <View style={styles.modalView}>
                                 <Text style={styles.texto}>
@@ -188,9 +356,8 @@ const Home = ({ currentUser }) => {
                                 <TouchableOpacity style={styles.button2}
 
                                     onPress={() => {
-                                        addRelacaoSexual(currentUser.id,relacaoSexual);
-                                        calendarioAddDiaRelacao(relacaoSexual);
-                                    }
+                                        handlePressAddRelacao();
+                                        }
                                     }>
 
                                     <Text style={styles.buttonText}>Confirmar</Text>
@@ -211,7 +378,7 @@ const Home = ({ currentUser }) => {
                         transparent={true}
                         visible={modal2Visible}
                         onRequestClose={() => setModal2Visible(false)}
-                    >
+                     >
                         <View style={styles.centeredView}>
                             <View style={styles.modalView}>
                                 <Text style={styles.texto}>
@@ -263,8 +430,11 @@ const Home = ({ currentUser }) => {
 
                                 <TouchableOpacity
                                     style={styles.button2}
-                                    //onPress={ola}
-                                >
+                                    onPress={() => {
+                                        handlePressMenstruacao();
+                                        }
+                                    }
+                                 >
                                     <Text style={styles.buttonText}>Confirmar</Text>
                                 </TouchableOpacity>
                             </View>
