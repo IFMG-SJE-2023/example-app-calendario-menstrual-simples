@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, SafeAreaView, Alert, TextInput } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/Feather'; //  alterado de FontAwesome
@@ -101,7 +101,7 @@ const Home = ({ currentUser }) => {
         setheartDates(oldArray => [...oldArray, novoDia ]);
     };
 
-    // funcao primeira botao CONFIRMAR do modal de relacoes
+    // funcao primeira botao CONFIRMAR do modal de relacoes..
     async function addRelacaoSexual(id_usuario, dataDia) {
         // porem ao pressionar um dia, a var  RelacaoSexual que é atribuida
         // onDayPress={(day) => setRelacaoSexual(day.dateString)}
@@ -138,7 +138,7 @@ const Home = ({ currentUser }) => {
     async function getRelacaoSexual(id_usuario) {
         //  precisa de uma funcao para ler cada resultado e preencher no calendario
         // usando 
-        console.log("getRelacaoSexual");
+        console.log("getRelacaoSexual INICIO ");
         // console.log(RelacaoSexual);
         try {
             let request  = await fetch(config.urlRootNode + 'get-relacao-sexual', {
@@ -162,19 +162,21 @@ const Home = ({ currentUser }) => {
                       setheartDates(oldArray => [...oldArray, RelacaoSexual.dataValues.data ]);
                 });
             } else {
+                console.log("getRelacaoSexual  response.success  FALSE");
                 console.log(response.json());
             }
             // return data;
         
         } catch (error) {
+            console.log("getRelacaoSexual  catch ");
             console.error(error);
         }
     }
 
-
+    //  grava no DB a menstruacao marcada no modal 
     async function addCicloMenstrual(id_usuario, inicio) {
         // id_usuarioRelacao
-       
+        const dtInicio = moment(inicio).format('YYYY-MM-DD');
         const dtFim = moment(inicio).add(4, 'days');
         try {
           const response = await fetch(config.urlRootNode + 'add-ciclo-menstrual', {
@@ -184,8 +186,8 @@ const Home = ({ currentUser }) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              id_usuario: id_usuario,
-              dataInicio:  inicio,
+              id_usuarioCiclo: id_usuario,
+              dataInicio:  dtInicio,
               dataFim:  dtFim,
               intervalo1: intervalo
             })
@@ -196,10 +198,15 @@ const Home = ({ currentUser }) => {
             
           }
         } catch (error) {
+            console.log("addCicloMenstrual  catch ");
           console.error(error);
         }
-      }
+    }
     
+
+
+
+    //  puxa do DB  menstrucao mais recente
     async function getUltimaMenstruacao(id_usuario) {
         try {
             let request = await fetch(config.urlRootNode + 'get-ultima-menstruacao', {
@@ -220,8 +227,11 @@ const Home = ({ currentUser }) => {
                 let dataFim;
                 let dateArray = [];
   
-                console.log("get relacoes baixadas:  ");
+                console.log(" getUltimaMenstruacao:  ");
+                console.log(" === console.log(response); === ");
+                
                 console.log(response);
+                console.log(" === console.log(response.data); === ");
                 console.log(response.data);
                 // só tem 1 resultado
                 response.foreach((Ciclo_Menstrual) =>{
@@ -242,46 +252,15 @@ const Home = ({ currentUser }) => {
             
             } else {
                 // exibir mensagem de erro
+                console.log(" getUltimaMenstruacao:  response.success FALSE ");
+
             }
         } catch (error) {
+            console.log("addCicloMenstrual catch ")
           console.error(error);
           // exibir mensagem de erro
         }
     }
-    async function appMen(id_usuario, dataDia) {
-        // porem ao pressionar um dia, a var  RelacaoSexual que é atribuida
-        // onDayPress={(day) => setRelacaoSexual(day.dateString)}
-        console.log("addRelacaoSexual" + dataDia);
-        // console.log(RelacaoSexual);
-
-        try {
-            console.log(currentUser.id,dataDia)
-            const request = await fetch(config.urlRootNode + 'add-ciclo-menstrual', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id_usuarioRelacao: id_usuario,
-                    dataRelacao: dataDia
-                })
-            });
-            let response = await request.json();
-            if (response.success) {
-                console.log("relacao gravada");
-            } else {
-                console.log(response.json());
-            }
-            // return data;
-        
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-
-
 
 
     return (
@@ -408,6 +387,8 @@ const Home = ({ currentUser }) => {
                                         onChange={(event, date) => {
                                             setShowDatePicker(false);
                                             if (date) {
+                                                console.log(" menstruacao  DateTimePicker if(Date) TRUE ")
+                                                console.log(date);
                                                 setSelectedDate(date);
                                             }
                                         }}
@@ -416,13 +397,6 @@ const Home = ({ currentUser }) => {
                                 <Text style={styles.label}>Intervalo das menstruações</Text>
                                 <TextInput
                                     placeholder="Intervalo em dias"
-                                    style={styles.input}
-                                    value={intervalo}
-                                    onChangeText={setIntervalo}
-                                />
-                                <Text style={styles.label}>Informaçoes da menstruação</Text>
-                                <TextInput
-                                    placeholder="Observações sobre o ciclo"
                                     style={styles.input}
                                     value={intervalo}
                                     onChangeText={setIntervalo}

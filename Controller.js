@@ -144,13 +144,12 @@ app.post('/get-ultima-menstruacao', async (req, res) => {
             where: {
                 id_usuario: id_usuarioCiclo
             },
-            order: [['data', 'DESC']],
-            limit: '1'
+            order: [['data_inicio', 'DESC']],
+            limit: 1
         });
         if (Ciclo_Menstrual) {
             console.log(Ciclo_Menstrual);
-            res.send(JSON.stringify( Ciclo_Menstrual
-            ));
+            res.send(JSON.stringify( Ciclo_Menstrual));
         } else {
             res.status(401).send(JSON.stringify({ message: 'erro ao buscar ultimo menstru' }));
         }
